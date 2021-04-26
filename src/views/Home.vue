@@ -11,8 +11,10 @@
       </div>
       <div
         style="width:150px;height: 80px;border: 1px solid #000;border-radius: 10px;font-size: 20px;margin: 20px;cursor: pointer;"
-        class="layout-center">
-        训练回放
+        class="layout-center"
+        @click="gotoTrain"
+      >
+        训练管理
       </div>
 
     </div>
@@ -38,7 +40,7 @@
         this.$store.commit("SET_DATAFILESTATUS", true)
         this.$router.push('/data')
       },
-      enterSystem() {
+      gotoTrain() {
         this.$router.push("/marking")
       }
     }

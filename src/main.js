@@ -8,6 +8,7 @@ import {message} from "ant-design-vue"
 axios.defaults.baseURL = 'http://localhost:3000'
 Vue.prototype.$http = axios
 Vue.prototype.$message = message
+Vue.prototype.$publicConfig = config
 Vue.use(Antd)
 Vue.config.productionTip = false
 
