@@ -26,7 +26,7 @@
     },
     created() {
 
-      this.$http.get('/api/test').then(res => {
+      this.$http.post('/api/findTrainList').then(res => {
         console.log(res.data)
       })
     },
