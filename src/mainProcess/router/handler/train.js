@@ -21,7 +21,7 @@
 let userModel = require('../../model/userModel')
 
 let findTrainListHandler = async (req, res) => {
-  let findResult = await userModel.find({'name':'赵六'})
+  let findResult = await userModel.find({'username':'谷双'})
   console.log(findResult)
   res.status(200).send({
     data: null,

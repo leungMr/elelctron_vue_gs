@@ -1,34 +1,7 @@
 import {ipcMain} from 'electron'
-
 const fs = require('fs');
-const exec = require('child_process').exec
 const spawn = require('child_process').spawn
-
-
-// 主进程监听 窗口控制与值的返回
-// global类似与process,node里面自带的,变量定义的时候就先定义到global里面去
 export default function () {
-  // ipcMain.on('pingCmd', (event, args) => {
-  //   const pingCmd = spawn('ping', ['10.10.0.199', '/t'])
-  //   pingCmd.stdout.on('data', data => {
-  //     let data2 = iconv.decode(data, 'GBK')
-  //     event.reply('getCmdResult', {data: data2, pid: pingCmd.pid})
-  //   })
-  //   pingCmd.stderr.on('data', err => {
-  //     console.log(err)
-  //   })
-  //   pingCmd.on('close', code => {
-  //     console.log(code)
-  //   })
-  // })
-
-  // 主进程收到消息后,给子进程返回值
-  ipcMain.on('test', (event) => {
-    // cwd()当前执行node命令的文件夹地址
-    event.returnValue = ""
-  });
-
-  // 导出本地数据 arg是表名
   ipcMain.on('exportLocalData', (event, arg) => {
     let cmdPath = process.cwd() + "\\static\\mongodb"
     let spawnObj = spawn('.\\bin\\mongoexport.exe', ['-h', 'localhost:27017', '-d', 'nipDb', '-c', arg, '-o', `.\\mustTable\\${arg}.json`], {cwd: cmdPath})
