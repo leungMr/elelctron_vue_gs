@@ -5,7 +5,9 @@ import store from './store'
 import Antd from 'ant-design-vue'
 import axios from 'axios'
 import {message} from "ant-design-vue"
+const {ipcRenderer} = require("electron")
 axios.defaults.baseURL = 'http://localhost:3000'
+Vue.prototype.$electron = ipcRenderer
 Vue.prototype.$http = axios
 Vue.prototype.$message = message
 Vue.prototype.$publicConfig = config

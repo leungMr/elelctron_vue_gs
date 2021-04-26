@@ -25,16 +25,23 @@
       return {}
     },
     created() {
-
       this.$http.post('/api/findTrainList').then(res => {
-        console.log(res.data)
+        // console.log(res.data)
       })
     },
     mounted() {
-
+      this.getInitExamData()
     }
     ,
-    methods: {}
+    methods: {
+      // 获取初始化考试列表数据
+      getInitExamData() {
+        // const {ipcRenderer} = require("electron");
+        let dumpFiles2 = this.$electron.sendSync('getInitExamData_')
+        console.log(dumpFiles2[0]._doc)
+        console.log(123)
+      }
+    }
   }
 </script>
 

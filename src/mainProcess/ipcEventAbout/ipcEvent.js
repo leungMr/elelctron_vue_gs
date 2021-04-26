@@ -1,7 +1,10 @@
 import {ipcMain} from 'electron'
+
 const fs = require('fs');
 const spawn = require('child_process').spawn
 export default function () {
+  // *****************以下是数据库相关*******************************
+  // 导出本地数据库
   ipcMain.on('exportLocalData', (event, arg) => {
     let cmdPath = process.cwd() + "\\static\\mongodb"
     let spawnObj = spawn('.\\bin\\mongoexport.exe', ['-h', 'localhost:27017', '-d', 'nipDb', '-c', arg, '-o', `.\\mustTable\\${arg}.json`], {cwd: cmdPath})
@@ -33,7 +36,8 @@ export default function () {
       event.returnValue = ""
     })
   });
-  //dump并查询  由于在这边实现不了,放于子进程
+
+  //dump并查询
   ipcMain.on('readDumpFile', (event) => {
     let cmdPath = process.cwd() + "\\static\\mongodb"
     let spawnObj = spawn('.\\bin\\mongodump.exe', ['-o', '.\\bin\\dump'], {cwd: cmdPath})
@@ -53,9 +57,17 @@ export default function () {
     })
   });
 
+  // *****************以下是考核相关*******************************
+  ipcMain.on('getInitExamData_', async (event) => {
+    let userModel = require('../model/userModel')
+    let findResult = await userModel.find({'username':'谷双'})
+    console.log(findResult)
+    event.returnValue = findResult
+  });
 
-// 定义一个读dump文件夹里面读文件的方法
-  // 文件夹为key,里面的元素为value
+
+  // *****************以下是工具方法*******************************
+  // 定义一个读dump文件夹里面读文件的方法
   let readFileFunc = (path) => {
     // 读出数据库dump里面的东西
     let folders = []
