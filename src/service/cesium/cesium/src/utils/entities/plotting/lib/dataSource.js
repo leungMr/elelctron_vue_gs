@@ -1,0 +1,24 @@
+const plottingType = {
+  MARKER: 100,                //  |100|MARKER|点|
+  POLYLINE: 101,              //  |101|POLYLINE|线|
+  CURVE: 102,                 //  |102|CURVE|曲线|
+  FREEHAND_LINE: 103,         //  |103|FREEHAND_LINE|自由线|
+  POLYGON: 104,               //  |104|POLYGON|面|
+  FREEHAND_POLYGON: 105,      //  |105|FREEHAND_POLYGON|自由面|
+  CIRCLE: 106,                //  |106|CIRCLE|圆|
+  ELLIPSE: 107,               //  |107|ELLIPSE|椭圆|
+  RECTANGLE: 108,             //  |108|RECTANGLE|矩形|
+  ARC: 109,                   //  |109|ARC|弓形线|
+  CLOSED_CURVE: 110,          //  |110|CLOSED_CURVE|闭合曲面|
+  LUNE: 111,                  //  |111|LUNE|弓形|
+  SECTOR: 112,                //  |112|SECTOR|扇形|
+  GATHERING_PLACE: 113,       //  |113|GATHERING_PLACE|集结地|
+  STRAIGHT_ARROW: 114,        //  |114|STRAIGHT_ARROW|细直箭头|
+  ASSAULT_DIRECTION: 115,     //  |115|ASSAULT_DIRECTION|粗单直箭头|
+  ATTACK_ARROW: 116,          //  |116|ATTACK_ARROW|进攻方向|
+  TAILED_ATTACK_ARROW: 117,   //  |117|TAILED_ATTACK_ARROW|进攻方向（尾）|
+  SQUAD_COMBAT: 118,          //  |118|SQUAD_COMBAT|战斗行动|
+  TAILED_SQUAD_COMBAT: 119,   //  |119|TAILED_SQUAD_COMBAT|分队战斗行动（尾）|
+  FINE_ARROW: 120,            //  |120|FINE_ARROW|粗单尖头箭头|
+  DOUBLE_ARROW: 121,          //  |121|DOUBLE_ARROW|双箭头|
+}
