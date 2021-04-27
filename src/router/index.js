@@ -20,6 +20,10 @@ const routes = [
   {
     path: '/marking',
     component: () => import(/* webpackChunkName: "about" */ '../views/Marking')
+  },
+  {
+    path: '/markingInfo',
+    component: () => import(/* webpackChunkName: "about" */ '../views/MarkingInfo')
   }
 ]
 

@@ -86,7 +86,9 @@
       },
       // 查看每场考试的详情
       searchExamInfo(e) {
-        console.log(e)
+        // console.log(e)
+        let examId = e.examDesignId
+        this.$router.push("/markingInfo?examDesignId=" + examId)
       },
       // *************以下是工具函数*****************
       getTimeDuration(time1, time2) {

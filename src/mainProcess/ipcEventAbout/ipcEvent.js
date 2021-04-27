@@ -58,7 +58,15 @@ export default function () {
   });
 
   // *****************以下是考核相关*******************************
+  // 查询考核列表
   ipcMain.on('getInitExamData_', async (event) => {
+    let trainModel = require('../model/trainModel')
+    let findResult = await trainModel.find()
+    event.returnValue = findResult
+  });
+
+  // 查询考核详情
+  ipcMain.on('getTrainInfo_', async (event,arg) => {
     let trainModel = require('../model/trainModel')
     let findResult = await trainModel.find()
     event.returnValue = findResult

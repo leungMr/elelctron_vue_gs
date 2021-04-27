@@ -148,12 +148,17 @@
       readDumpFile() {
         const {ipcRenderer} = require("electron");
         let dumpFiles2 = ipcRenderer.sendSync('readDumpFile')
-        this.dumpFiles = dumpFiles2[0]['gs_db'] ? dumpFiles2[0]['gs_db'] : []
-        this.dumpFiles = this.dumpFiles.filter(item => {
-          if (item.indexOf(".metadata.") === -1) {
-            return item
-          }
-        })
+        // 如果gs_db里面没有集合 则dump不会dump gs_db  dumpFiles2就为[]
+        if (dumpFiles2.length === 0) {
+          this.dumpFiles = []
+        } else {
+          this.dumpFiles = dumpFiles2[0]['gs_db'] ? dumpFiles2[0]['gs_db'] : []
+          this.dumpFiles = this.dumpFiles.filter(item => {
+            if (item.indexOf(".metadata.") === -1) {
+              return item
+            }
+          })
+        }
         this.$store.commit("SET_DATAFILESTATUS", false)
       },
       goHome() {
