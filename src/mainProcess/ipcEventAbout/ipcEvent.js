@@ -59,9 +59,8 @@ export default function () {
 
   // *****************以下是考核相关*******************************
   ipcMain.on('getInitExamData_', async (event) => {
-    let userModel = require('../model/userModel')
-    let findResult = await userModel.find({'username':'谷双'})
-    console.log(findResult)
+    let trainModel = require('../model/trainModel')
+    let findResult = await trainModel.find()
     event.returnValue = findResult
   });
 
