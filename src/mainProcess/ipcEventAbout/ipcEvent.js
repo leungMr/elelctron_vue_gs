@@ -1,5 +1,6 @@
 import {ipcMain} from 'electron'
 
+let jsonFileToTrainModel = require('../model/jsonFileToTrainModal')
 const fs = require('fs');
 const spawn = require('child_process').spawn
 export default function () {
@@ -17,8 +18,8 @@ export default function () {
     })
   });
 
-  // 往本地数据库导入东西
-  ipcMain.on('importToLocalData', (event, arg) => {
+  // 读取本地数据库文件再导入数据库
+  ipcMain.on('importToLocalDataByDatabase', (event, arg) => {
     // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json  arg{filePath,tableName}
     let cmdPath = process.cwd() + "\\static\\mongodb"
     let spawnObj = spawn('.\\bin\\mongoimport.exe', ['-h', 'localhost:27017', '-d', 'gs_db', '-c', arg.tableName, '--file', arg.filePath], {cwd: cmdPath})
@@ -57,6 +58,29 @@ export default function () {
     })
   });
 
+  // 读取本地json文件
+  ipcMain.on('importToLocalDataByJsonFile', (event, arg) => {
+    // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json  arg{filePath,tableName}
+    let filePath = arg.filePath
+    fs.readFile(filePath, async function (err, data) {
+      if (err) {
+        return console.error(err)
+      }
+      let fileData = JSON.parse(data.toString())
+      await jsonFileToTrainModel.create({
+        beginTime: fileData[0].beginTime,
+        endTime: fileData[0].endTime,
+        examDesignId: fileData[0].examDesignId,
+        toputoNodes:fileData[0].toputoNodes,
+        communications: fileData[0].communications
+      })
+      event.returnValue = fileData
+    })
+
+
+  });
+
+
   // *****************以下是考核相关*******************************
   // 查询考核列表
   ipcMain.on('getInitExamData_', async (event) => {
@@ -70,7 +94,7 @@ export default function () {
   ipcMain.on('getTrainInfo_', async (event, arg) => {
     // 需要联合查询 存在一张主表和两张附表
     let trainModel = require('../model/trainModel')
-    let findResult = await trainModel.findOne({examDesignId:arg})
+    let findResult = await trainModel.findOne({examDesignId: arg})
     // console.log(findResult)
     event.returnValue = findResult
   });

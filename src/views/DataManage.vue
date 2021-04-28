@@ -9,6 +9,8 @@
     <div style="width: 100%;height: calc(100% - 40px);padding-top: 2px;">
       <a-button @click="importDataButton" style="margin-left: 10px;">导入集合</a-button>
       <a-button @click="exportData">导出集合</a-button>
+      <a-button @click="importJsonFile">导入json文件</a-button>
+
       <input @change="importInformation($event)"
              accept=".json"
              id="upload2" slot="content" style="display: none"
@@ -85,6 +87,8 @@
     components: {},
     data() {
       return {
+        // 是否是数据库导入标识
+        isDatabaseFlag: true,
         // 当前导入的集合的名字
         currentImportTbaleName: '',
         // 是否展示模态框1
@@ -127,27 +131,46 @@
         this.readDumpFile()
       },
       importMustTable(item) {
+        this.isDatabaseFlag = true
         this.currentImportTbaleName = item.name
         document.getElementById("upload2").click()
       },
       // 模态框操作相关E
+      // 导入json文件
+      importJsonFile() {
+        this.isDatabaseFlag = false
+        document.getElementById("upload2").click()
+      },
       //导入按钮
       importDataButton(event) {
         this.ishshowModal1 = true
         // 弹出弹框
         // document.getElementById("upload2").click();
       },
-      //导入信息功能
+      // 导入信息功能
+      // 根据flag判断导入的是json文件还是数据库
+      // 触发的方式是通过点击不同的按钮 触发input的点击事件从而触发它
       importInformation(obj) {
+        const that =this
         // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json
         let theFilePath = obj.target.files[0].path
-        const {ipcRenderer} = require("electron");
-        let result = ipcRenderer.sendSync('importToLocalData', {
-          filePath: theFilePath,
-          tableName: this.currentImportTbaleName
-        })
-        this.$message.success("导入成功")
-        this.$refs.fileBtn.value = ''
+        // 数据库导入版
+        if (that.isDatabaseFlag === true) {
+          let result = that.$electron.sendSync('importToLocalDataByDatabase', {
+            filePath: theFilePath,
+            tableName: that.currentImportTbaleName
+          })
+        }
+        // json文件导入版
+        else if (that.isDatabaseFlag === false) {
+          let result = that.$electron.sendSync('importToLocalDataByJsonFile', {
+            filePath: theFilePath
+          })
+          console.log(result)
+        }
+
+        that.$message.success("导入成功")
+        that.$refs.fileBtn.value = ''
       },
       readDumpFile() {
         const {ipcRenderer} = require("electron");
