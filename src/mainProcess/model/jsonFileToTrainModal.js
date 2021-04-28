@@ -5,8 +5,8 @@ const userSchema = new Schema({
   username: String
 });
 const userToDevSchema = new Schema({
-  deviceId:String,
-  user:[userSchema]
+  deviceId: String,
+  user: [userSchema]
 });
 let jsonFileToTrainSchema = new Schema({
   // email:{
@@ -14,12 +14,23 @@ let jsonFileToTrainSchema = new Schema({
   //   required:true,
   //   unique:true
   // },
-  beginTime:String,
-  endTime:String,
-  examDesignId:String,
-  toputoNodes:String,
+  beginTime: String,
+  endTime: String,
+  examDesignId: String,
+  toputoNodes: String,
   // communications:userToDevSchema
-  communications:Array
+  // communications:Array
+  communications: [
+    {
+      deviceId: String,
+      user: {
+        userhahah: {
+          type: String,
+        },
+        username: String
+      }
+    }
+  ]
 })
 module.exports = mongoose.model('jsonFileToTrain', jsonFileToTrainSchema, 'jsonFileToTrain')
 
