@@ -82,7 +82,6 @@
         allTrains.forEach(item => {
           this.finishTrains.push(item._doc)
         })
-        // console.log(this.finishTrains)
       },
       // 查看每场考试的详情
       searchExamInfo(e) {

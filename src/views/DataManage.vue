@@ -27,7 +27,7 @@
           :key="index"
         >
           <a-icon type="database" style="font-size: 30px;"/>
-          <div style="width: 100%;text-align: center;">{{item}}</div>
+          <div style="width: 100%;text-align: center;">{{item.substring(0,item.length-5)}}</div>
         </div>
       </div>
 
@@ -49,7 +49,7 @@
       <!--  </a-button>-->
       <!--</template>-->
       <div style="width: 100%;">
-        <div style="margin: 5px 0;">固定集合：</div>
+        <div style="margin: 5px 0;">必须集合：</div>
         <div style="width: 100%;">
           <a-button
             style="margin: 0 5px;"
@@ -99,6 +99,10 @@
           },
           {
             name: 'User',
+            status: 'fail'
+          },
+          {
+            name: 'EquipmentUnit',
             status: 'fail'
           }
         ],
@@ -167,9 +171,10 @@
       // 导出本地集合
       exportData() {
         const {ipcRenderer} = require("electron");
-        // 这里是从sj的数据库中导出
+        // 这里是从sj的数据库中导出 到mustTable
         let tableName = 'TrainingDesign'
         // let tableName = 'User'
+        // let tableName = 'EquipmentUnit'
         ipcRenderer.sendSync('exportLocalData', tableName)
         this.$message.success("导出成功")
       }

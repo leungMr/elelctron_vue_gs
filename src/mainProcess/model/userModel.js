@@ -8,6 +8,7 @@ let Schema = mongoose.Schema
 
 //2.制定一个进入你家的规则 -------- 创建一个约束对象实例
 let userSchema = new Schema({
+  name:String
 
 })
 

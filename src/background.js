@@ -56,8 +56,10 @@ function createWindow () {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
+  // console.log("app关闭了")
+  // console.log(global. startMongodbPid)
+  // 杀死开数据库的进程
+  process.kill(global. startMongodbPid)
   if (process.platform !== 'darwin') {
     app.quit()
   }

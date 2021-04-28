@@ -62,13 +62,16 @@ export default function () {
   ipcMain.on('getInitExamData_', async (event) => {
     let trainModel = require('../model/trainModel')
     let findResult = await trainModel.find()
+    // console.log(findResult)
     event.returnValue = findResult
   });
 
   // 查询考核详情
-  ipcMain.on('getTrainInfo_', async (event,arg) => {
+  ipcMain.on('getTrainInfo_', async (event, arg) => {
+    // 需要联合查询 存在一张主表和两张附表
     let trainModel = require('../model/trainModel')
-    let findResult = await trainModel.find()
+    let findResult = await trainModel.findOne({examDesignId:arg})
+    // console.log(findResult)
     event.returnValue = findResult
   });
 

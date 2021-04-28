@@ -14,6 +14,20 @@ function startMongodbService() {
       // console.log("数据库服务开启成功")
       resolve(chunk.toString())
     });
+    // 失败
+    spawnObj.stderr.on('data', (data) => {
+      console.log("失败二零")
+      console.log(data.toString());
+    });
+    // 子进程关闭
+    spawnObj.on('close', function (code) {
+      console.log("在这里执行；额")
+      resolve(code.toString())
+    })
+
+
+
+    global.startMongodbPid = spawnObj.pid
 
   })
 }
