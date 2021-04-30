@@ -59,12 +59,7 @@
         finishTrains: []
       }
     },
-    created() {
-      // 接口版 现在没用了
-      this.$http.post('/api/findTrainList').then(res => {
-        // console.log(res.data)
-      })
-    },
+    created() {},
     mounted() {
       this.getInitExamData()
     }

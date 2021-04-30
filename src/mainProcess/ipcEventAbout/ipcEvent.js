@@ -108,8 +108,7 @@ export default function () {
   // 查询考核详情
   ipcMain.on('getTrainInfo_', async (event, arg) => {
     // 需要联合查询 存在一张主表和两张附表
-    let trainListModal = require('../model/trainListModal')
-    let findResult = await trainModel.findOne({examDesignId: arg})
+    let findResult = await trainListModal.findOne({examDesignId: arg})
     // console.log(findResult)
     event.returnValue = findResult
   });
