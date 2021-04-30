@@ -1,6 +1,6 @@
 import {ipcMain} from 'electron'
 
-let jsonFileToTrainModel = require('../model/jsonFileToTrainModal')
+let trainListModal = require('../model/trainListModal')
 const fs = require('fs');
 const spawn = require('child_process').spawn
 export default function () {
@@ -67,14 +67,30 @@ export default function () {
         return console.error(err)
       }
       let fileData = JSON.parse(data.toString())
-      await jsonFileToTrainModel.create({
-        beginTime: fileData[0].beginTime,
-        endTime: fileData[0].endTime,
-        examDesignId: fileData[0].examDesignId,
-        toputoNodes:fileData[0].toputoNodes,
-        communications: fileData[0].communications
+
+      fileData.length > 0 && fileData.forEach(item => {
+        if (item.trainingPlanEntity) {
+          delete item.trainingPlanEntity
+        }
+        if (item.trainingDesignStateUpAndDowns) {
+          delete item.trainingDesignStateUpAndDowns
+        }
+        item.trainingDesignRelevanceList.length > 0 && item.trainingDesignRelevanceList.forEach(ele => {
+          ele.netList.forEach(uu => {
+            uu.subject && delete uu.subject
+            uu.subjects && delete uu.subjects
+          })
+        })
       })
-      event.returnValue = fileData
+      // insert会把数组里面的东西全部导入
+      // 集合名是在modal里面定义的
+      await trainListModal.collection.insert(fileData, (err, docs) => {
+        if (err) {
+          event.returnValue = {code: 0}
+        } else {
+          event.returnValue = {code: 1}
+        }
+      })
     })
 
 
@@ -84,8 +100,7 @@ export default function () {
   // *****************以下是考核相关*******************************
   // 查询考核列表
   ipcMain.on('getInitExamData_', async (event) => {
-    let trainModel = require('../model/trainModel')
-    let findResult = await trainModel.find()
+    let findResult = await trainListModal.find()
     // console.log(findResult)
     event.returnValue = findResult
   });
@@ -93,7 +108,7 @@ export default function () {
   // 查询考核详情
   ipcMain.on('getTrainInfo_', async (event, arg) => {
     // 需要联合查询 存在一张主表和两张附表
-    let trainModel = require('../model/trainModel')
+    let trainListModal = require('../model/trainListModal')
     let findResult = await trainModel.findOne({examDesignId: arg})
     // console.log(findResult)
     event.returnValue = findResult

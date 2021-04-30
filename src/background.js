@@ -1,13 +1,13 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import {app, protocol, BrowserWindow, dialog} from 'electron'
 import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
-import initExpress from "./mainProcess/expressAbout/initExpress";
 import initIpcEvent from './mainProcess/ipcEventAbout/ipcEvent'
-
+// 引入数据库连接模块
+let db = require('./mainProcess/db/index')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -23,7 +23,7 @@ protocol.registerSchemesAsPrivileged([{
   }
 }])
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 1200,
@@ -48,10 +48,15 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
-  // 数据接口模块
-  initExpress()
   // 通信模块
-  initIpcEvent()
+  db.then(() => {
+    initIpcEvent()
+  }).catch((err) => {
+    dialog.showMessageBox({
+      type: 'warning',
+      message: '数据库连接失败',
+    })
+  })
 }
 
 // Quit when all windows are closed.
@@ -59,7 +64,7 @@ app.on('window-all-closed', () => {
   // console.log("app关闭了")
   // console.log(global. startMongodbPid)
   // 杀死开数据库的进程
-  process.kill(global. startMongodbPid)
+  process.kill(global.startMongodbPid)
   if (process.platform !== 'darwin') {
     app.quit()
   }
