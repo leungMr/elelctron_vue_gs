@@ -14,14 +14,29 @@
       <div
         style="width:calc(100% - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
         <div style="width: 100%;height: 100%;">
-          <TopotuDisplay
-            ref="topotuDisplay"
-          ></TopotuDisplay>
+          <!--左上S-->
+          <div style="width: 100%;height: calc(100% - 60px);">
+            <TopotuDisplay
+              ref="topotuDisplay"
+            ></TopotuDisplay>
+          </div>
+          <!--左上E-->
+          <!--左下S-->
+          <div style="width: 100%;height: 60px;overflow: hidden;">
+            <DataPlayer @timeEcho="timeEcho"
+                        @progressNotification="progressNotification"
+                        :duration="duration"
+                        ref="datapalyer"
+                        style="bottom: 0;z-index: 1000;">
+            </DataPlayer>
+          </div>
+          <!--左下E-->
         </div>
       </div>
       <!--左E-->
       <!--右S-->
-      <div style="width: 250px;height: 100%;border-left: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
+      <div
+        style="width: 250px;height: 100%;border-left: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
         <ExameRightList></ExameRightList>
       </div>
       <!--右E-->
@@ -32,12 +47,15 @@
 <script>
   import TopotuDisplay from './template/TopotuDisplay'
   import ExameRightList from "./template/ExameRightList"
-  import DataPlayer   from "./template/DataPlayer";
+  import DataPlayer from "./template/DataPlayer"
 
   export default {
     data() {
       return {
+        // 考试所有信息
         trainInfo: [],
+        // 时间进度条长度
+        duration: 1,
       }
     },
     async mounted() {
@@ -51,6 +69,15 @@
       DataPlayer
     },
     methods: {
+      // 开始播放执行一次 结束播放也要执行一次
+      progressNotification(e) {
+        // code: 0,explain: "开始"
+        // 1-----暂停
+        // 2-----继续
+        // console.log(e)
+      },
+      timeEcho(e) {
+      },
       // 初始化考试详情
       initTheTrainInfo() {
         return new Promise((resolve, reject) => {
