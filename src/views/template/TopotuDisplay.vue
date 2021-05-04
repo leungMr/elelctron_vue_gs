@@ -1,5 +1,5 @@
 <template>
-  <div class="width-100-per height-100-per">
+  <div class="width-100-per height-100-per overflow-hidden">
     <!--<div style="width: 100%;height: 40px;">-->
     <!--  <a-button class="layout-left-center" @click="enterEdit">-->
     <!--    更改战略部署关系-->

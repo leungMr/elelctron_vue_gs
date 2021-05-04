@@ -1,5 +1,8 @@
 <template>
-  <div style="width: 100%;height: 100%;background-color: #2f3d39;">
+  <div
+    style="width: 100%;height: 100%;"
+    :style="{'background-color':$publicConfig.backgroundColor}"
+  >
     <div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7"
          class="layout-side">
       <span style="margin-left: 10px;font-size: 16px;">数据管理</span>
@@ -36,7 +39,7 @@
         <div
           style="width: 100px;height: 50px;margin: 10px;"
           class="layout-center"
-          v-for="(item,index) in dumpFiles"
+          v-for="(item,index) in []"
           :key="index"
         >
           <a-icon type="database" style="font-size: 30px;"/>
