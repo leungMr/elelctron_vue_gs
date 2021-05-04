@@ -45,9 +45,10 @@
   </div>
 </template>
 <script>
-  import TopotuDisplay from './template/TopotuDisplay'
+  import TopotuDisplay from "./template/TopotuDisplay"
   import ExameRightList from "./template/ExameRightList"
   import DataPlayer from "./template/DataPlayer"
+  import {getTimeDuration} from "./config/tool"
 
   export default {
     data() {
@@ -59,9 +60,17 @@
       }
     },
     async mounted() {
-      await this.initTheTrainInfo()
-      console.log(this.trainInfo)
-      this.initTuoputo()
+      let getTrainInfo = await this.initTheTrainInfo()
+      if(getTrainInfo.status === 0){
+        this.$message.error("数据库错误")
+        return
+      }else{
+        this.trainInfo = getTrainInfo.data
+      }
+      // 初始化拓扑图
+      this.initTuoputo(JSON.parse(this.trainInfo.toputoNodes))
+      // 初始化时间组件
+      this.initDataPlayerTime(this.trainInfo.beginTime,this.trainInfo.endTime)
     },
     components: {
       TopotuDisplay,
@@ -69,6 +78,10 @@
       DataPlayer
     },
     methods: {
+      // 初始化时间组件
+      initDataPlayerTime(time1,time2) {
+       this.duration =  getTimeDuration(time1,time2)
+      },
       // 开始播放执行一次 结束播放也要执行一次
       progressNotification(e) {
         // code: 0,explain: "开始"
@@ -85,14 +98,12 @@
           // 这是同步
           let thetrainInfo = this.$electron.sendSync('getTrainInfo_', examDesignId)
           if (thetrainInfo.status === 1) {
-            this.trainInfo = thetrainInfo.data._doc
             resolve(
               {
                 status: 1, data: thetrainInfo.data._doc
               }
             )
           } else {
-            this.$message.error("数据库错误")
             reject(
               {
                 status: 0, data: thetrainInfo.data
@@ -103,9 +114,9 @@
 
       },
       // 初始化拓扑图
-      initTuoputo() {
+      initTuoputo(data) {
         this.$nextTick(() => {
-          this.$refs.topotuDisplay.showNipEditor2(JSON.parse(this.trainInfo.toputoNodes))
+          this.$refs.topotuDisplay.showNipEditor2(data)
         })
       }
 
