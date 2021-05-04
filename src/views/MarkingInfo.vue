@@ -5,7 +5,9 @@
   >
     <div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7"
          class="layout-side">
-      <span style="margin-left: 10px;font-size: 16px;">{{trainInfo.trainingTitleName}}</span>
+      <span style="margin-left: 10px;font-size: 16px;">{{trainInfo.trainingTitleName}}
+        <a-icon type="info-circle" style="margin-left: 0px;" @click="$refs.markingInfoModal.isShowTrainDetail = true"/>
+      </span>
       <a-icon type="rollback" style="font-size: 20px;margin-right: 20px;" @click="$router.push('/marking')"/>
     </div>
     <!--主体区域S-->
@@ -42,12 +44,14 @@
       <!--右E-->
     </div>
     <!--主体区域E-->
+    <MarkingInfoModal :trainInfo="trainInfo" ref="markingInfoModal"></MarkingInfoModal>
   </div>
 </template>
 <script>
   import TopotuDisplay from "./template/TopotuDisplay"
   import ExameRightList from "./template/ExameRightList"
   import DataPlayer from "./template/DataPlayer"
+  import MarkingInfoModal from "./template/MarkingInfoModal"
   import {getTimeDuration} from "./config/tool"
 
   export default {
@@ -61,26 +65,28 @@
     },
     async mounted() {
       let getTrainInfo = await this.initTheTrainInfo()
-      if(getTrainInfo.status === 0){
+      if (getTrainInfo.status === 0) {
         this.$message.error("数据库错误")
         return
-      }else{
+      } else {
         this.trainInfo = getTrainInfo.data
+        console.log(this.trainInfo)
       }
       // 初始化拓扑图
       this.initTuoputo(JSON.parse(this.trainInfo.toputoNodes))
       // 初始化时间组件
-      this.initDataPlayerTime(this.trainInfo.beginTime,this.trainInfo.endTime)
+      this.initDataPlayerTime(this.trainInfo.beginTime, this.trainInfo.endTime)
     },
     components: {
       TopotuDisplay,
       ExameRightList,
-      DataPlayer
+      DataPlayer,
+      MarkingInfoModal
     },
     methods: {
       // 初始化时间组件
-      initDataPlayerTime(time1,time2) {
-       this.duration =  getTimeDuration(time1,time2)
+      initDataPlayerTime(time1, time2) {
+        this.duration = getTimeDuration(time1, time2)
       },
       // 开始播放执行一次 结束播放也要执行一次
       progressNotification(e) {
