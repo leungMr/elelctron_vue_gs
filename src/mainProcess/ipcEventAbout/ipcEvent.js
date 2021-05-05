@@ -116,6 +116,7 @@ export default function () {
           event.returnValue = {code: 0}
         } else {
           // console.log(docs)
+          // 主进程这边修改了代码需要重启
           event.returnValue = {code: 1}
         }
       })
