@@ -17,6 +17,7 @@
         @click="gotoTrain"
       >
         训练管理
+        <a-spin :spinning="$store.getters.dataTrainStatus"></a-spin>
       </div>
 
     </div>
@@ -40,10 +41,16 @@
     methods: {
       gotoData() {
         this.$store.commit("SET_DATAFILESTATUS", true)
-        this.$router.push('/data')
+        setTimeout(() => {
+          this.$router.push('/data')
+        }, 0)
+
       },
       gotoTrain() {
-        this.$router.push("/marking")
+        this.$store.commit("SET_DATATRAINSTATUS", true)
+        setTimeout(() => {
+          this.$router.push('/marking')
+        }, 1000)
       }
     }
   }

@@ -77,6 +77,7 @@
         allTrains.forEach(item => {
           this.finishTrains.push(item._doc)
         })
+        this.$store.commit("SET_DATATRAINSTATUS", false)
       },
       // 查看每场考试的详情
       searchExamInfo(e) {
