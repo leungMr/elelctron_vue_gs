@@ -57,6 +57,32 @@ export default function () {
       event.returnValue = allFiles
     })
   });
+  // 读本地文件并获取进度
+  ipcMain.on('importToLocalDataByJsonFile2', (event, arg) => {
+    let readStream = fs.createReadStream(arg.filePath)
+    let totalSize = fs.statSync(arg.filePath).size  // 通过 fs.statSync 获取文件大小
+    let curSize = 0
+    let percent = '0%'
+    let arr = []
+    readStream.on('data', (chunk) => {
+      // chunk 数据块
+      // 计算当前读取到的文件的大小，计算读取的顺序
+      // chunk 是一个 buffer 对象
+      // 每一次读取到了一点数据，将该数据的长度累加起来 / 文件的总大小 * 100 得到百分比
+      curSize += chunk.length
+      // 将已经读取到的字节数 / 总字节数 * 100 = 百分比
+      percent = (curSize / totalSize * 100).toFixed(2) + '%'
+      console.log('读取中' + percent)
+      arr.push(chunk)
+    })
+
+    // end 事件监听读写结束
+    readStream.on('end', (chunk) => {
+      console.log('读取结束')
+      console.log(Buffer.concat(arr).toString())
+      event.returnValue = ''
+    })
+  })
 
   // 读取本地json文件
   ipcMain.on('importToLocalDataByJsonFile', (event, arg) => {
@@ -64,6 +90,7 @@ export default function () {
     let filePath = arg.filePath
     fs.readFile(filePath, async function (err, data) {
       if (err) {
+        event.returnValue = {code: 0}
         return console.error(err)
       }
       let fileData = JSON.parse(data.toString())
@@ -88,6 +115,7 @@ export default function () {
         if (err) {
           event.returnValue = {code: 0}
         } else {
+          // console.log(docs)
           event.returnValue = {code: 1}
         }
       })
@@ -113,13 +141,13 @@ export default function () {
       // console.log(findResult)
       // 返回的固定格式
       event.returnValue = {
-        status:1,
-        data:findResult
+        status: 1,
+        data: findResult
       }
-    }catch(err){
+    } catch (err) {
       event.returnValue = {
-        status:0,
-        data:err
+        status: 0,
+        data: err
       }
     }
 
