@@ -34,12 +34,13 @@ function startMongodbService() {
 // 创建数据库连接
 let times = 0
 let connectMongodb = () => {
-  mongoose.connection.on('open', err => {
+  mongoose.connect(`mongodb://${DB_URL}/${DB_NAME}`, err => {
     if (!err) {
       console.log(`位于${DB_URL}上的${DB_NAME}数据库连接成功`)
     } else {
       console.log("数据库连接失败")
       times++
+      console.log(times)
       if (times > 3) return
       connectMongodb()
     }
@@ -47,11 +48,13 @@ let connectMongodb = () => {
 }
 module.exports = new Promise(async (resolve, reject) => {
   await startMongodbService()
-  mongoose.connect(`mongodb://${DB_URL}/${DB_NAME}`, {useNewUrlParser: true})
   connectMongodb()
-  if (times > 3) {
-    reject()
-  } else {
-    resolve()
-  }
+  setTimeout(() => {
+    if (times > 3) {
+      console.log(times)
+      reject()
+    } else {
+      resolve()
+    }
+  }, 3000)
 })

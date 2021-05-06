@@ -50,6 +50,10 @@ function createWindow() {
   })
   // 通信模块
   db.then(() => {
+    // dialog.showMessageBox({
+    //   type: 'warning',
+    //   message: '数据库连接成功',
+    // })
     initIpcEvent()
   }).catch((err) => {
     dialog.showMessageBox({
