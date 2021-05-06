@@ -10,42 +10,48 @@ function startMongodbService() {
   return new Promise((resolve, reject) => {
     let spawnObj = spawn('.\\bin\\mongod.exe', ['--dbpath', '.\\data'], {cwd: cmdPath})
     spawnObj.stdout.on('data', function (chunk) {
-      // console.log(chunk.toString());
-      // console.log("数据库服务开启成功")
-      resolve(chunk.toString())
+      resolve({
+        status: 1,
+        data: chunk.toString()
+      })
     });
     // 失败
-    spawnObj.stderr.on('data', (data) => {
-      // console.log("失败")
-      console.log(data.toString());
+    spawnObj.stderr.on('data', (chunk) => {
+      resolve({
+        status: 0,
+        data: chunk.toString()
+      })
     });
     // 子进程关闭
-    spawnObj.on('close', function (code) {
-      resolve(code.toString())
+    spawnObj.on('close', function (chunk) {
+      resolve(chunk.toString())
     })
-
-
-
     global.startMongodbPid = spawnObj.pid
-
   })
 }
 
 
-//构建一个Promise实例，用于管理数据库连接
-module.exports = new Promise(async (resolve, reject) => {
-  //2.连接数据库
-  await startMongodbService()
-  mongoose.connect(`mongodb://${DB_URL}/${DB_NAME}`, {useNewUrlParser: true})
-
-  //3.监听连接状态
-  mongoose.connection.on('open', (err) => {
+// 创建数据库连接
+let times = 0
+let connectMongodb = () => {
+  mongoose.connection.on('open', err => {
     if (!err) {
       console.log(`位于${DB_URL}上的${DB_NAME}数据库连接成功`)
-      resolve()
     } else {
-      reject(err)
-      console.log(cmdPath)
+      console.log("数据库连接失败")
+      times++
+      if (times > 3) return
+      connectMongodb()
     }
   })
+}
+module.exports = new Promise(async (resolve, reject) => {
+  await startMongodbService()
+  mongoose.connect(`mongodb://${DB_URL}/${DB_NAME}`, {useNewUrlParser: true})
+  connectMongodb()
+  if (times > 3) {
+    reject()
+  } else {
+    resolve()
+  }
 })
