@@ -46,15 +46,9 @@ let connectMongodb = () => {
     }
   })
 }
-module.exports = new Promise(async (resolve, reject) => {
+module.exports = async () => {
   await startMongodbService()
   connectMongodb()
-  setTimeout(() => {
-    if (times > 3) {
-      console.log(times)
-      reject()
-    } else {
-      resolve()
-    }
-  }, 3000)
-})
+}
+
+

@@ -43,7 +43,7 @@
         this.$store.commit("SET_DATAFILESTATUS", true)
         setTimeout(() => {
           this.$router.push('/data')
-        }, 0)
+        }, 1000)
 
       },
       gotoTrain() {

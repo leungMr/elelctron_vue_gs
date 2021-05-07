@@ -48,19 +48,10 @@ function createWindow() {
   win.on('closed', () => {
     win = null
   })
+  // 数据库模块
+  db()
   // 通信模块
-  db.then(() => {
-    // dialog.showMessageBox({
-    //   type: 'warning',
-    //   message: '数据库连接成功',
-    // })
-    initIpcEvent()
-  }).catch((err) => {
-    dialog.showMessageBox({
-      type: 'warning',
-      message: '数据库连接失败',
-    })
-  })
+  initIpcEvent()
 }
 
 // Quit when all windows are closed.
