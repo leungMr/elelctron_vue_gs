@@ -43,6 +43,7 @@ export default function () {
     let successFlag = true
     let cmdPath = process.cwd() + "\\static\\mongodb"
     let spawnObj = spawn('.\\bin\\mongodump.exe', ['-o', '.\\bin\\dump'], {cwd: cmdPath})
+    console.log(spawnObj.pid)
     // 成功
     spawnObj.stdout.on('data', function (chunk) {
       console.log(chunk)

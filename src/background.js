@@ -56,7 +56,7 @@ function createWindow() {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // console.log("app关闭了")
+  console.log("app关闭了")
   // console.log(global. startMongodbPid)
   // 杀死开数据库的进程
   process.kill(global.startMongodbPid)
