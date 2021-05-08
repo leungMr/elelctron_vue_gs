@@ -46,8 +46,7 @@ export default function () {
     console.log(spawnObj.pid)
     // 成功
     spawnObj.stdout.on('data', function (chunk) {
-      console.log(chunk)
-      console.log("成功")
+      console.log("此处从不打印")
     });
     // 失败
     spawnObj.stderr.on('data', (data) => {
@@ -57,6 +56,7 @@ export default function () {
       }
     });
     // 子进程关闭
+    // dump这种进程会自动死亡,与mongodb不同
     spawnObj.on('close', function (code) {
       console.log("子进程已退出")
       if (successFlag === false) {
