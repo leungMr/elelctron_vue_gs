@@ -40,21 +40,36 @@ export default function () {
 
   //dump并查询
   ipcMain.on('readDumpFile', (event) => {
+    let successFlag = true
     let cmdPath = process.cwd() + "\\static\\mongodb"
     let spawnObj = spawn('.\\bin\\mongodump.exe', ['-o', '.\\bin\\dump'], {cwd: cmdPath})
     // 成功
     spawnObj.stdout.on('data', function (chunk) {
       console.log(chunk)
+      console.log("成功")
     });
     // 失败
     spawnObj.stderr.on('data', (data) => {
-      // console.log(data.toString());
+      let fileInfo = data.toString()
+      if (fileInfo.indexOf("Failed") !== -1) {
+        successFlag = false
+      }
     });
     // 子进程关闭
     spawnObj.on('close', function (code) {
-      // 先dump成功再读
-      let allFiles = readFileFunc(cmdPath + "\\bin\\dump")
-      event.returnValue = allFiles
+      console.log("子进程已退出")
+      if (successFlag === false) {
+        event.returnValue = {
+          code: 0
+        }
+      } else {
+        let allFiles = readFileFunc(cmdPath + "\\bin\\dump")
+        event.returnValue = {
+          code: 1,
+          data: allFiles
+        }
+      }
+
     })
   });
   // 读本地文件并获取进度

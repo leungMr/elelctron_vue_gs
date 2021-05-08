@@ -104,7 +104,12 @@
         that.$refs.fileBtn.value = ''
       },
       readDumpFile() {
-        let dumpFiles2 = this.$electron.sendSync('readDumpFile')
+        let dumpFiles_ = this.$electron.sendSync('readDumpFile')
+        if (dumpFiles_.code === 0) {
+          this.$message.error("数据库错误")
+          return
+        }
+        let dumpFiles2 = dumpFiles_.data
         // 如果gs_db里面没有集合 则dump不会dump gs_db  dumpFiles2就为[]
         if (dumpFiles2.length === 0) {
           this.dumpFiles = []
