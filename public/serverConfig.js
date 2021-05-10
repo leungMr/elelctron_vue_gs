@@ -1,5 +1,5 @@
 const config = {
-  // backgroundColor: '#2f3d39',
-  backgroundColor: '#3b8371'
+  backgroundColor: '#2f3d39',
+  // backgroundColor: '#3b8371'
 
 };

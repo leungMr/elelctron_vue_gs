@@ -10,8 +10,8 @@
     >
       <div>训练名称：{{trainInfo.trainingTitleName}}</div>
       <div>开始时间：{{trainInfo.beginTime}}</div>
-      <div>训练地点：{{trainInfo.locationEntity.name}}</div>
-      <div>监训人员：{{trainInfo.supervisorsEntity[0].name}}</div>
+      <div>训练地点：{{trainInfo.locationEntity && trainInfo.locationEntity.name}}</div>
+      <div>监训人员：{{trainInfo.supervisorsEntity && trainInfo.supervisorsEntity[0].name}}</div>
     </a-modal>
   </div>
 </template>
