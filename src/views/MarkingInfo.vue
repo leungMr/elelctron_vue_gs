@@ -109,12 +109,16 @@
         // 2-----继续
         // console.log(e)
       },
+      // 当前的时间戳,一秒一秒的
       timeEcho(e) {
-        console.log(e)
+        // console.log(e)
+        // 根据时间戳判断当前传给右边进行渲染的有哪些信息
+        // console.log(this.allRealTimeData)
         this.pointRealTimeData = this.allRealTimeData.filter(item => {
-          let duration = moment(qwe.endTime).diff(moment(qwe.beginTime), 'seconds')
+          let duration = moment(item.time).diff(moment(this.trainInfo.beginTime), 'seconds')
+          console.log(duration)
         })
-        this.duration = moment(qwe.endTime).diff(moment(qwe.beginTime), 'seconds')
+        // this.duration = moment(qwe.endTime).diff(moment(qwe.beginTime), 'seconds')
       },
       // 初始化考试详情
       initTheTrainInfo() {

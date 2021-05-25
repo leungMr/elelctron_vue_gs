@@ -86,7 +86,8 @@
               lat: Number(a[j].y),
               alt: a[j].z === undefined ? 500 : Number(a[j].z),
               // 初始化设备在地图上的高度
-              noDragging: false,
+              // 是否允许拖动设备
+              noDragging: true,
               label: {
                 name: a[j].examineUser.userEntity.name,
                 size: "11",
