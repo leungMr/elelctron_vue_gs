@@ -17,10 +17,8 @@
         style="width:calc(100% - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
         <div style="width: 100%;height: 100%;">
           <!--左上S-->
-          <div style="width: 100%;height: calc(100% - 60px);">
-            <TopotuDisplay
-              ref="topotuDisplay"
-            ></TopotuDisplay>
+          <div style="width: 100%;height: calc(100% - 60px);position:relative;">
+            <CesiumMaps ref="cesiumMaps"></CesiumMaps>
           </div>
           <!--左上E-->
           <!--左下S-->
@@ -48,11 +46,11 @@
   </div>
 </template>
 <script>
-  import TopotuDisplay from "./template/TopotuDisplay"
   import ExameRightList from "./template/ExameRightList"
   import DataPlayer from "./template/DataPlayer"
   import MarkingInfoModal from "./template/MarkingInfoModal"
   import {getTimeDuration} from "./config/tool"
+  import CesiumMaps from "../views/template/CesiumMaps"
   import moment from 'moment'
 
   export default {
@@ -79,8 +77,6 @@
         this.trainInfo = getTrainInfo.data
         console.log(this.trainInfo)
       }
-      // 初始化拓扑图
-      this.initTuoputo(JSON.parse(this.trainInfo.toputoNodes))
       // 初始化时间组件
       this.initDataPlayerTime(this.trainInfo.beginTime, this.trainInfo.endTime)
       // 初始化人员设备关联数组
@@ -89,10 +85,10 @@
       this.getAllRealTimeData(this.trainInfo)
     },
     components: {
-      TopotuDisplay,
       ExameRightList,
       DataPlayer,
-      MarkingInfoModal
+      MarkingInfoModal,
+      CesiumMaps
     },
     methods: {
       // 初始化时间组件
@@ -108,7 +104,7 @@
       },
       timeEcho(e) {
         console.log(e)
-        this.pointRealTimeData = this.allRealTimeData.filter(item=>{
+        this.pointRealTimeData = this.allRealTimeData.filter(item => {
           let duration = moment(qwe.endTime).diff(moment(qwe.beginTime), 'seconds')
         })
         this.duration = moment(qwe.endTime).diff(moment(qwe.beginTime), 'seconds')
@@ -134,12 +130,6 @@
           }
         })
 
-      },
-      // 初始化拓扑图
-      initTuoputo(data) {
-        this.$nextTick(() => {
-          this.$refs.topotuDisplay.showNipEditor2(data)
-        })
       },
       // 获取人员与设备绑定的数组
       getUserAndDevice(data) {
