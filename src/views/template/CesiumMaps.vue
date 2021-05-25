@@ -35,8 +35,8 @@
   let viewer, command;
 
   export default {
-    data(){
-      return{
+    data() {
+      return {
         // 地图相关
         mapBaseData: {
           lng: 0,
@@ -51,7 +51,7 @@
             iconUrl: layer_yx,
             type: 0,
             // url: "http://10.10.0.115:3000/title?x={x}&y={y}&z={z}"
-            url:require("../../assets/img/mapbase.png")
+            url: require("../../assets/img/mapbase.jpg")
           },
           // {
           //   name: "等高线图",
@@ -71,9 +71,51 @@
       }
     },
     mounted() {
+      // 初始化地图
       this.addmap()
     },
-    methods:{
+    methods: {
+      // 根据上个页面的坐标初始化设备位置
+      initDeviceLocation(nodeArr) {
+        for (let i = 0; i < nodeArr.trainingDesignRelevanceList.length; i++) {
+          let a = nodeArr.trainingDesignRelevanceList[i].netList;
+          for (let j = 0; j < a.length; j++) {
+            let obj = {
+              id: String(a[j].equipmentUnit.deviceCode),
+              lng: Number(a[j].x),
+              lat: Number(a[j].y),
+              alt: a[j].z === undefined ? 500 : Number(a[j].z),
+              // 初始化设备在地图上的高度
+              noDragging: false,
+              label: {
+                name: a[j].examineUser.userEntity.name,
+                size: "11",
+                x: 0,
+                y: -60,
+                color: "rgba(255,255,255,1)"
+              },
+              image: {
+                // url: this.fileUrl + a[j].equipmentUnit.equipmentType.faceBase64,
+                url: require("../../assets/img/TCR173 高速数据电台模拟器.png"),
+                width: 50,
+                height: 50,
+              }
+            }
+            command.addMarker(3, obj, this.debounce(this.receiveMap, 200), this.clickImg, this.upDwun)
+          }
+        }
+      },
+      debounce(func, wait) {
+        let timeout;
+        return function () {
+          let that = this;
+          let args = arguments;
+          if (timeout) clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            func.apply(that, args)
+          }, wait)
+        }
+      },
       addmap() {
         // 镜头位置
         let init = new NipCesium.Init('cesiumContainer', this.viewModes, this.receiveMapInfo,
@@ -97,64 +139,74 @@
         command.positionMe({x: "106.379390", y: "29.534726", z: "13000"});
       }
       ,
+      // 拖动
+      receiveMap(e) {
+
+      },
+      clickImg(e) {
+
+      },
+      upDwun(e) {
+
+      },
       //查看距离
       lookGap() {
-      //   const that = this;
-      //   if (that.gapStop) {
-      //     let arr = this.markers
-      //     // console.log(arr)
-      //     let arr2 = [{
-      //       id: "802007120001",
-      //       x: '',
-      //       y: '',
-      //       z: ''
-      //     }]
-      //     let num = 0;
-      //     let list = [];
-      //     for (let i in arr) {
-      //       for (let j in arr) {
-      //         if (arr[i].id !== arr[j].id) {
-      //           num++;
-      //           // 用来存一共有多少条测距线
-      //           that.gapList.push({
-      //             id: num,
-      //             equId: arr[i].id,
-      //           })
-      //           let distance = getFlatternDistance(Number(arr[i].x), Number(arr[i].y), Number(arr[j].x),
-      //             Number(arr[j].y))
-      //           command.addMarker(5, {
-      //             id: num,
-      //             color: "rgba(255,255,255,1)",
-      //             text: parseInt(distance) + '',
-      //             fontColor: "rgba(255,255,255,1)",
-      //             // 字体高度
-      //             altitude: 500,
-      //             start: {
-      //               name: '点一',
-      //               x: Number(arr[i].x),
-      //               y: Number(arr[i].y),
-      //               //线的高度
-      //               h: arr[i].z === undefined ? 500 : Number(arr[i].z)
-      //             },
-      //             to: {
-      //               name: '点二',
-      //               x: Number(arr[j].x),
-      //               y: Number(arr[j].y),
-      //               // h: 800,
-      //               h: arr[j].z === undefined ? 500 : Number(arr[j].z)
-      //             },
-      //           });
-      //         }
-      //       }
-      //     }
-      //     that.gapStop = false;
-      //   } else {
-      //     for (let j of that.gapList) {
-      //       command.deleteEntity(j.id + "");
-      //       command.deleteEntity("label" + j.id);
-      //     }
-      //     that.gapStop = true;
-      //   }
+        //   const that = this;
+        //   if (that.gapStop) {
+        //     let arr = this.markers
+        //     // console.log(arr)
+        //     let arr2 = [{
+        //       id: "802007120001",
+        //       x: '',
+        //       y: '',
+        //       z: ''
+        //     }]
+        //     let num = 0;
+        //     let list = [];
+        //     for (let i in arr) {
+        //       for (let j in arr) {
+        //         if (arr[i].id !== arr[j].id) {
+        //           num++;
+        //           // 用来存一共有多少条测距线
+        //           that.gapList.push({
+        //             id: num,
+        //             equId: arr[i].id,
+        //           })
+        //           let distance = getFlatternDistance(Number(arr[i].x), Number(arr[i].y), Number(arr[j].x),
+        //             Number(arr[j].y))
+        //           command.addMarker(5, {
+        //             id: num,
+        //             color: "rgba(255,255,255,1)",
+        //             text: parseInt(distance) + '',
+        //             fontColor: "rgba(255,255,255,1)",
+        //             // 字体高度
+        //             altitude: 500,
+        //             start: {
+        //               name: '点一',
+        //               x: Number(arr[i].x),
+        //               y: Number(arr[i].y),
+        //               //线的高度
+        //               h: arr[i].z === undefined ? 500 : Number(arr[i].z)
+        //             },
+        //             to: {
+        //               name: '点二',
+        //               x: Number(arr[j].x),
+        //               y: Number(arr[j].y),
+        //               // h: 800,
+        //               h: arr[j].z === undefined ? 500 : Number(arr[j].z)
+        //             },
+        //           });
+        //         }
+        //       }
+        //     }
+        //     that.gapStop = false;
+        //   } else {
+        //     for (let j of that.gapList) {
+        //       command.deleteEntity(j.id + "");
+        //       command.deleteEntity("label" + j.id);
+        //     }
+        //     that.gapStop = true;
+        //   }
       }
     }
   }

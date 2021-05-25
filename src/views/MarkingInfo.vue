@@ -17,7 +17,7 @@
         style="width:calc(100% - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
         <div style="width: 100%;height: 100%;">
           <!--左上S-->
-          <div style="width: 100%;height: calc(100% - 60px);position:relative;">
+          <div style="width: 100%;height: calc(100% - 60px);position:relative;padding-left: 4px;">
             <CesiumMaps ref="cesiumMaps"></CesiumMaps>
           </div>
           <!--左上E-->
@@ -83,6 +83,13 @@
       this.deviceAndUserArr = this.getUserAndDevice(this.trainInfo.trainingDesignRelevanceList)
       // 初始化所有的实时操作信息
       this.getAllRealTimeData(this.trainInfo)
+
+      this.$nextTick(() => {
+        // 初始化设备位置
+        this.$refs.cesiumMaps.initDeviceLocation(this.trainInfo)
+      })
+
+
     },
     components: {
       ExameRightList,
@@ -174,7 +181,7 @@
           })
         }
         // 汇总排序
-        console.log(this.allRealTimeData)
+        // console.log(this.allRealTimeData)
         this.allRealTimeData = this.sortArrByTime(this.allRealTimeData)
       },
       // 根据时间排序数组
