@@ -113,9 +113,6 @@ export default function () {
         if (item.trainingPlanEntity) {
           delete item.trainingPlanEntity
         }
-        if (item.trainingDesignStateUpAndDowns) {
-          delete item.trainingDesignStateUpAndDowns
-        }
         item.trainingDesignRelevanceList.length > 0 && item.trainingDesignRelevanceList.forEach(ele => {
           ele.netList.forEach(uu => {
             uu.subject && delete uu.subject

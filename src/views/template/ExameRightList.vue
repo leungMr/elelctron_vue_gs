@@ -12,7 +12,15 @@
     <!--上E-->
     <!--下S-->
     <div
-      style="width: 100%;height: calc(100% - 40px);"></div>
+      style="width: 100%;height: calc(100% - 40px);padding-top: 10px;">
+      <a-timeline>
+        <a-timeline-item color="red">
+          <p>Solve initial network problems 1</p>
+          <p>Solve initial network problems 2</p>
+          <p>Solve initial network problems 3 2015-09-01</p>
+        </a-timeline-item>
+      </a-timeline>
+    </div>
     <!--下E-->
   </div>
 </template>
