@@ -102,6 +102,15 @@
       initDataPlayerTime(time1, time2) {
         this.duration = getTimeDuration(time1, time2)
       },
+      // 根据时间戳判断当前传给右边进行渲染的有哪些信息
+      getPointTimeData(timeEcho) {
+        this.pointRealTimeData = this.allRealTimeData.filter(item => {
+          let duration = moment(item.time).diff(moment(this.trainInfo.beginTime), 'seconds')
+          if (duration >= timeEcho) {
+            return item
+          }
+        })
+      },
       // 开始播放执行一次 结束播放也要执行一次
       progressNotification(e) {
         // code: 0,explain: "开始"
@@ -111,14 +120,9 @@
       },
       // 当前的时间戳,一秒一秒的
       timeEcho(e) {
-        // console.log(e)
-        // 根据时间戳判断当前传给右边进行渲染的有哪些信息
-        // console.log(this.allRealTimeData)
-        this.pointRealTimeData = this.allRealTimeData.filter(item => {
-          let duration = moment(item.time).diff(moment(this.trainInfo.beginTime), 'seconds')
-          console.log(duration)
-        })
-        // this.duration = moment(qwe.endTime).diff(moment(qwe.beginTime), 'seconds')
+        // 组装右边实时信息
+        this.getPointTimeData(e)
+
       },
       // 初始化考试详情
       initTheTrainInfo() {
