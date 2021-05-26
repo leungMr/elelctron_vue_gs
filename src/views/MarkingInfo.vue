@@ -112,6 +112,8 @@
         })
         // 渲染实时信息组件
         this.$refs.exameRightList.getRealTimeData(this.pointRealTimeData)
+        // 渲染地图
+        this.$refs.cesiumMaps.getRealTimeData(this.pointRealTimeData)
       },
       // 开始播放执行一次 结束播放也要执行一次
       progressNotification(e) {
@@ -171,6 +173,10 @@
         this.allRealTimeData = []
         if (data.communications && data.communications.length > 0) {
           data.communications.forEach(item => {
+            // 过滤考试未开始的数据
+            if (moment(item.time).diff(moment(this.trainInfo.beginTime), 'seconds') < 0) {
+              return
+            }
             let obj = {}
             // 通用
             obj.status = "业务通信"
@@ -178,6 +184,9 @@
             obj.mainId = this.deviceIdToUser(item.deviceId)
             // 通用
             obj.time = item.time
+            // 通用
+            obj.mainDeviceId = item.deviceId
+            obj.deviceIdWith = item.deviceIds
             obj.idWith = this.deviceArrToUserArr(item.deviceIds)
 
             this.allRealTimeData.push(obj)
@@ -186,6 +195,10 @@
         // 组装设备上下线=========================
         if (data.trainingDesignStateUpAndDowns && data.trainingDesignStateUpAndDowns.length > 0) {
           data.trainingDesignStateUpAndDowns.forEach(item => {
+            // 过滤考试未开始的数据
+            if (moment(item.beginTime).diff(moment(this.trainInfo.beginTime), 'seconds') < 0) {
+              return
+            }
             let obj = {}
             obj.status = "设备状态"
             obj.mainId = this.deviceIdToUser(item.deviceId)
@@ -195,7 +208,6 @@
           })
         }
         // 汇总排序
-        // console.log(this.allRealTimeData)
         this.allRealTimeData = this.sortArrByTime(this.allRealTimeData)
         // console.log(this.allRealTimeData)
       },

@@ -34,7 +34,7 @@
             <span>{{item.mainId}}</span>
             <span>上线</span>
           </div>
-          <div v-else-if="item.status==='设备状态'&& item.state === '6'" style="color: yellow;">
+          <div v-else-if="item.status==='设备状态'&& item.state === '6'" style="color: gray;">
             <span>{{item.mainId}}</span>
             <span>下线</span>
           </div>

@@ -37,7 +37,7 @@
   export default {
     data() {
       return {
-        // 地图相关
+        // 地图相关===========================
         mapBaseData: {
           lng: 0,
           lat: 0,
@@ -68,6 +68,11 @@
           //   url: "http://10.10.0.99:8000/api/map/dem"
           // }
         ],
+        // 逻辑数据相关===========================
+        // 最后一次组网的数组(去重用)
+        lastNetArr: [],
+        // 最后一次连线的数组(去重用)
+        lastPhoneArr: [],
       }
     },
     mounted() {
@@ -75,6 +80,133 @@
       this.addmap()
     },
     methods: {
+      // 根据传过来的实时信息渲染各种动画
+      // e 从最近时间的对象 开始排
+      // 已经过滤了考试未开始的数据
+      getRealTimeData(e) {
+        // 设备通话
+        let communications = []
+        e.forEach(item => {
+          if (item.status === '业务通信') {
+            communications.unshift(item)
+            return
+          }
+        })
+        this.opPhoneConnectLine(communications)
+
+      },
+      // 打电话连线或者是退打电话线
+      opPhoneConnectLine(phoneInfos) {
+        if (JSON.stringify(phoneInfos) === JSON.stringify(this.lastPhoneArr)) {
+          // console.log("与上次打电话的数组相同")
+          return
+        }
+        this.lastPhoneArr = JSON.parse(JSON.stringify(phoneInfos))
+        let allLine = command.getLines()
+        let allLine2 = JSON.parse(JSON.stringify(allLine))
+        if (allLine2.length > 0) {
+          allLine2.forEach(item => {
+            // new打电话  new2组网
+            if (item.id.endsWith('new')) {
+              command.deleteEntity(item.id)
+            }
+          })
+        }
+        phoneInfos.forEach(item => {
+          if (item.deviceIdWith.length === 0) {
+            this.breakMakeNetWorking(item.mainDeviceId, "打电话")
+            return
+          }
+          let idList = []
+          idList.push(item.mainDeviceId)
+          item.deviceIdWith.forEach((item, index) => {
+            idList.push(item)
+          })
+          let allLocation = command.getImgs()
+          let allLocation2 = JSON.parse(JSON.stringify(allLocation))
+          let makeArr = this.orgnizeNetwork(idList, allLocation2)
+          this.makeFlyLine(makeArr)
+        })
+
+      },
+      makeFlyLine(arr) {
+        for (let i = 0; i < arr.length; i++) {
+          command.deleteEntity(arr[0].deviceId + arr[i].deviceId + 'new');
+        }
+        for (let i = 0; i < arr.length; i++) {
+          if (i > 0) {
+            command.addLine(1, {
+              id: arr[0].deviceId + arr[i].deviceId + 'new',
+              start: {
+                name: arr[0].deviceId,
+                x: JSON.parse(arr[0].locationSongParam).lon / 100,
+                y: JSON.parse(arr[0].locationSongParam).lat / 100,
+                // 飞线高度
+                h: 1000
+              },
+              to: {
+                name: arr[i].deviceId,
+                x: JSON.parse(arr[i].locationSongParam).lon / 100,
+                y: JSON.parse(arr[i].locationSongParam).lat / 100,
+                h: 1000
+              },
+              // 弧线顶点高度
+              peakHeight: 1000
+            })
+          }
+        }
+      },
+      // 断开组网或者断开打电话
+      breakMakeNetWorking(id, type) {
+        let allLine = command.getLines()
+        let allLine2 = JSON.parse(JSON.stringify(allLine))
+        if (type === '打电话') {
+          allLine2.forEach(item => {
+            if (item.start.name === id || item.to.name === id) {
+              if (item.id.endsWith("new")) {
+                command.deleteEntity(item.id)
+              }
+            }
+          })
+        }
+        if (type === '组网') {
+          allLine2.forEach(item => {
+            if (item.start.name === id || item.to.name === id) {
+              if (item.id.endsWith("new2")) {
+                command.deleteEntity(item.id);
+                command.deleteEntity('label' + item.id);
+              }
+            }
+          })
+        }
+      },
+      // 组织组网或者打电话的数组
+      orgnizeNetwork(arr, allLocation2) {
+        let makeArr = []
+        arr.forEach(ele => {
+          allLocation2.forEach(aa => {
+            if (ele === aa.id) {
+              let obj = {
+                // deviceBattery: "0",
+                // timeOur: "2020-10-29 15:33:34",
+                // latAnnotation: "N",
+                lon: aa.lng * 100,
+                // equipmentVoltage: "73",
+                deviceId: ele,
+                lat: aa.lat * 100,
+                // lonAnnotation: "E",
+                // height: "255.600",
+              }
+              let obj2 = {
+                deviceId: ele,
+                locationSongParam: JSON.stringify(obj)
+              }
+              makeArr.push(obj2)
+            }
+          })
+        })
+        return makeArr
+      },
       // 根据上个页面的坐标初始化设备位置
       initDeviceLocation(nodeArr) {
         for (let i = 0; i < nodeArr.trainingDesignRelevanceList.length; i++) {
