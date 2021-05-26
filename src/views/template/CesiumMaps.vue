@@ -130,7 +130,7 @@
         command = new NipCesium.Command();
       },
       mapLoadNullFunc(e) {
-        console.log("地图加载完了")
+        // console.log("地图加载完了")
       },
       receiveMapInfo(e) {
         this.mapBaseData = e;

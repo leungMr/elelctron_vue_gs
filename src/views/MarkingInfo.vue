@@ -37,7 +37,7 @@
       <!--右S-->
       <div
         style="width: 250px;height: 100%;border-left: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
-        <ExameRightList></ExameRightList>
+        <ExameRightList ref="exameRightList"></ExameRightList>
       </div>
       <!--右E-->
     </div>
@@ -75,7 +75,7 @@
         return
       } else {
         this.trainInfo = getTrainInfo.data
-        console.log(this.trainInfo)
+        // console.log(this.trainInfo)
       }
       // 初始化时间组件
       this.initDataPlayerTime(this.trainInfo.beginTime, this.trainInfo.endTime)
@@ -106,10 +106,12 @@
       getPointTimeData(timeEcho) {
         this.pointRealTimeData = this.allRealTimeData.filter(item => {
           let duration = moment(item.time).diff(moment(this.trainInfo.beginTime), 'seconds')
-          if (duration >= timeEcho) {
+          if (duration <= timeEcho) {
             return item
           }
         })
+        // 渲染实时信息组件
+        this.$refs.exameRightList.getRealTimeData(this.pointRealTimeData)
       },
       // 开始播放执行一次 结束播放也要执行一次
       progressNotification(e) {
@@ -165,32 +167,37 @@
       },
       getAllRealTimeData(data) {
         // 在这里要把设备id转化为人员名字
-        // 组装通话
+        // 组装通话=========================
         this.allRealTimeData = []
         if (data.communications && data.communications.length > 0) {
           data.communications.forEach(item => {
             let obj = {}
+            // 通用
             obj.status = "业务通信"
+            // 通用
             obj.mainId = this.deviceIdToUser(item.deviceId)
-            obj.idWith = this.deviceArrToUserArr(item.deviceIds)
+            // 通用
             obj.time = item.time
+            obj.idWith = this.deviceArrToUserArr(item.deviceIds)
+
             this.allRealTimeData.push(obj)
           })
         }
-        // 组装设备上下线
+        // 组装设备上下线=========================
         if (data.trainingDesignStateUpAndDowns && data.trainingDesignStateUpAndDowns.length > 0) {
           data.trainingDesignStateUpAndDowns.forEach(item => {
             let obj = {}
             obj.status = "设备状态"
             obj.mainId = this.deviceIdToUser(item.deviceId)
-            obj.state = item.upAndDownState
             obj.time = item.beginTime
+            obj.state = item.upAndDownState
             this.allRealTimeData.push(obj)
           })
         }
         // 汇总排序
         // console.log(this.allRealTimeData)
         this.allRealTimeData = this.sortArrByTime(this.allRealTimeData)
+        // console.log(this.allRealTimeData)
       },
       // 根据时间排序数组
       sortArrByTime(arr) {
