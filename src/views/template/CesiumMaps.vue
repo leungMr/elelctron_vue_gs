@@ -258,6 +258,7 @@
             y: "29.534726",
             z: "13000"
           }, this.mode);
+        // 这个就是中心点位置,与主体软件是一样的
         viewer = init.viewer;
         command = new NipCesium.Command();
       },

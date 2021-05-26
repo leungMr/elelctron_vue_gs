@@ -75,7 +75,7 @@
         return
       } else {
         this.trainInfo = getTrainInfo.data
-        // console.log(this.trainInfo)
+        console.log(this.trainInfo)
       }
       // 初始化时间组件
       this.initDataPlayerTime(this.trainInfo.beginTime, this.trainInfo.endTime)
