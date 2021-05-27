@@ -2,6 +2,8 @@
 node_modules
 /dist
 /dist_electron
+/public/static/mongodb/bin
+/public/static/mongodb/data
 /static/mongodb/bin
 /static/mongodb/data
 

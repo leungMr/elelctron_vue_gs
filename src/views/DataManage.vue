@@ -11,7 +11,7 @@
     <!--内容区S-->
     <!--数据库文件导入S-->
     <div style="width: 100%;padding-top: 2px;">
-      <a-button @click="importJsonFile">导入数据库文件</a-button>
+      <a-button @click="importJsonFile('databaseFileImport')">导入数据库文件</a-button>
       <div
         style="width: 80%;min-height: 100px;border: 1px solid #d9d9b7;margin:10px auto;"
         class="layout-left-top"
@@ -31,7 +31,7 @@
     <div style="height: 20px;"></div>
     <!--音频文件导入S-->
     <div style="width: 100%;padding-top: 2px;">
-      <a-button @click="importJsonFile">导入音频文件</a-button>
+      <a-button @click="importJsonFile('mp3FileImport')">导入音频文件</a-button>
       <div
         style="width: 80%;min-height: 100px;border: 1px solid #d9d9b7;margin:10px auto;"
         class="layout-left-top"
@@ -79,15 +79,16 @@
     }
     ,
     methods: {
-      // 导入json文件
-      importJsonFile() {
-        this.fileTypeImportFlag = 'databaseFileImport'
+      // 导入json文件或者音频文件,根据flag来判断
+      importJsonFile(e) {
+        this.fileTypeImportFlag = e
         document.getElementById("fileInput").click()
       },
       importInformation(obj) {
         const that = this
         // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json
         let theFilePath = obj.target.files[0].path
+        // 导入数据库文件
         if (this.fileTypeImportFlag === 'databaseFileImport') {
           let result = that.$electron.sendSync('importToLocalDataByJsonFile', {
             filePath: theFilePath
@@ -100,6 +101,10 @@
             this.$message.success("导入数据失败,请联系管理员")
             this.fileTypeImportFlag = ''
           }
+        }
+        // 导入音频文件
+        else if (this.fileTypeImportFlag === 'mp3FileImport') {
+          console.log(theFilePath)
         }
         that.$refs.fileBtn.value = ''
       },

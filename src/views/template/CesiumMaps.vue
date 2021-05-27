@@ -29,7 +29,7 @@
 </template>
 
 <script>
-  import {NipCesium} from '../../../packages'
+  import {NipCesium} from '../../../public/packages'
   import layer_yx from "./layer_yx.png";
   // import layer_dg from "./layer_dg.png";
   let viewer, command;
