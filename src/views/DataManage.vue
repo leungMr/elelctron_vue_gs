@@ -51,9 +51,9 @@
     <!--内容区E-->
     <!--数据导入通用S-->
     <input @change="importInformation($event)"
-           accept=".json"
-           id="fileInput" slot="content" style="display: none"
+           id="fileInput" slot="content" style="display: none;"
            ref="fileBtn"
+           multiple
            type="file"/>
     <!--数据导入通用E-->
   </div>
@@ -79,6 +79,7 @@
     }
     ,
     methods: {
+
       // 导入json文件或者音频文件,根据flag来判断
       importJsonFile(e) {
         this.fileTypeImportFlag = e
@@ -87,9 +88,16 @@
       importInformation(obj) {
         const that = this
         // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json
-        let theFilePath = obj.target.files[0].path
         // 导入数据库文件
         if (this.fileTypeImportFlag === 'databaseFileImport') {
+
+          // 不管你导入多少个文件,我只取第一个
+          if (obj.target.files[0].type !== "application/json") {
+            this.$message.error("导入的文件类型错误")
+            that.$refs.fileBtn.value = ''
+            return
+          }
+          let theFilePath = obj.target.files[0].path
           let result = that.$electron.sendSync('importToLocalDataByJsonFile', {
             filePath: theFilePath
           })
@@ -104,7 +112,49 @@
         }
         // 导入音频文件
         else if (this.fileTypeImportFlag === 'mp3FileImport') {
-          console.log(theFilePath)
+          // 不管你导入多少个文件,有一个格式不为音频就重新导入
+          for (let uu of obj.target.files) {
+            if (uu.type !== "audio/wav") {
+              this.$message.error("存在导入的文件类型错误")
+              that.$refs.fileBtn.value = ''
+              return
+            }
+          }
+          let theFilePath = obj.target.files
+          // 先去数据库查出所有的考试id
+          let examToDeviceArr = []
+          let allExam = that.$electron.sendSync('getInitExamData_')
+          let examArr = []
+          allExam.forEach(item => {
+            examArr.push(item._doc.examDesignId)
+          })
+          // 分离出考试id与这场考试下的设备id,存储在数据库
+          for (let ele of examArr) {
+            let deviceArr_ = []
+            theFilePath.forEach(item => {
+              if (item.path.indexOf(ele) !== -1) {
+                deviceArr_.push(item.path)
+              }
+            })
+            let obj = {}
+            obj.examDesignId = ele
+            obj.deviceArr = deviceArr_
+            examToDeviceArr.push(obj)
+          }
+          // 写入数据库 同步要拿到返回之后才能执行下一步
+          let result = that.$electron.sendSync('examToDeviceArrimportMp3', {
+            examToDeviceArr: examToDeviceArr
+          })
+          if (result.code === 1) {
+            this.$message.success("导入数据成功")
+            this.readDumpFile()
+            this.fileTypeImportFlag = ''
+          } else {
+            this.$message.success("导入数据失败,请联系管理员")
+            this.fileTypeImportFlag = ''
+          }
+
+
         }
         that.$refs.fileBtn.value = ''
       },

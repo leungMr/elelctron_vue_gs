@@ -1,6 +1,7 @@
 import {ipcMain} from 'electron'
 
 let trainListModal = require('../model/trainListModal')
+let examIdToMp3Modal = require('../model/examIdToMp3Modal')
 const fs = require('fs');
 const spawn = require('child_process').spawn
 export default function () {
@@ -135,6 +136,19 @@ export default function () {
 
 
   });
+
+  // 导入音频文件
+  ipcMain.on('examToDeviceArrimportMp3', async (event, arg) => {
+    await examIdToMp3Modal.collection.insert(arg.examToDeviceArr, (err, docs) => {
+      if (err) {
+        event.returnValue = {code: 0}
+      } else {
+        // console.log(docs)
+        // 主进程这边修改了代码需要重启
+        event.returnValue = {code: 1}
+      }
+    })
+  })
 
 
   // *****************以下是考核相关*******************************
