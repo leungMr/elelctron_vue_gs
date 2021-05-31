@@ -6,38 +6,6 @@ const fs = require('fs');
 const spawn = require('child_process').spawn
 export default function () {
   // *****************以下是数据库相关*******************************
-  // 导出本地数据库
-  ipcMain.on('exportLocalData', (event, arg) => {
-    let cmdPath = process.cwd() + "\\static\\mongodb"
-    let spawnObj = spawn('.\\bin\\mongoexport.exe', ['-h', 'localhost:27017', '-d', 'nipDb', '-c', arg, '-o', `.\\mustTable\\${arg}.json`], {cwd: cmdPath})
-    spawnObj.stdout.on('data', function (chunk) {
-      event.returnValue = ""
-    })
-    spawnObj.on('close', function (code) {
-      console.log("导出成功")
-      event.returnValue = ""
-    })
-  });
-
-  // 读取本地数据库文件再导入数据库
-  ipcMain.on('importToLocalDataByDatabase', (event, arg) => {
-    // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json  arg{filePath,tableName}
-    let cmdPath = process.cwd() + "\\static\\mongodb"
-    let spawnObj = spawn('.\\bin\\mongoimport.exe', ['-h', 'localhost:27017', '-d', 'gs_db', '-c', arg.tableName, '--file', arg.filePath], {cwd: cmdPath})
-    spawnObj.stdout.on('data', function (chunk) {
-      console.log("没在成功打印,在子进程关闭那里打印的")
-      event.returnValue = ""
-    });
-    // 失败
-    spawnObj.stderr.on('data', (data) => {
-      // console.log(data.toString());
-    });
-    // 子进程关闭
-    spawnObj.on('close', function (code) {
-      console.log("导入成功")
-      event.returnValue = ""
-    })
-  });
 
   //dump并查询
   ipcMain.on('readDumpFile', (event) => {
@@ -99,7 +67,7 @@ export default function () {
     })
   })
 
-  // 读取本地json文件
+  // 读取本地json文件,导入考试列表
   ipcMain.on('importToLocalDataByJsonFile', (event, arg) => {
     // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json  arg{filePath,tableName}
     let filePath = arg.filePath
@@ -121,6 +89,19 @@ export default function () {
           })
         })
       })
+
+      // examId数据库已经有的要过滤掉
+      // 查询数据库全部考核数据
+      let findResult = await trainListModal.find()
+      let allExamId = []
+      findResult.forEach(item => {
+        allExamId.push(item.examDesignId)
+      })
+      fileData = fileData.filter(item => {
+        if (allExamId.indexOf(item.examDesignId) === -1) {
+          return item
+        }
+      })
       // insert会把数组里面的东西全部导入
       // 集合名是在modal里面定义的
       await trainListModal.collection.insert(fileData, (err, docs) => {
@@ -139,15 +120,54 @@ export default function () {
 
   // 导入音频文件
   ipcMain.on('examToDeviceArrimportMp3', async (event, arg) => {
-    await examIdToMp3Modal.collection.insert(arg.examToDeviceArr, (err, docs) => {
-      if (err) {
-        event.returnValue = {code: 0}
-      } else {
-        // console.log(docs)
-        // 主进程这边修改了代码需要重启
-        event.returnValue = {code: 1}
-      }
-    })
+    // console.log(arg)
+    // 推送过来的对象 一定会带考试id
+    // 先查出音频表所有数据,不重复的再push进去
+    // 同一个id所对应的数组下可能会重复
+    let findResult = await examIdToMp3Modal.find()
+    if (findResult.length === 0) {
+      // 音频表为空,直接写入
+      await examIdToMp3Modal.collection.insert(arg.examToDeviceArr, (err, docs) => {
+        if (err) {
+          event.returnValue = {code: 0}
+        } else {
+          event.returnValue = {code: 1}
+        }
+      })
+    }
+    // ===
+    else {
+      // 前端那边已经把在考试之外的文件过滤了
+      findResult.forEach(item => {
+        delete item._id
+        arg.examToDeviceArr.forEach(ele => {
+          if (ele.examDesignId === item.examDesignId) {
+            ele.deviceArr.forEach(uu => {
+              if (item.deviceArr.indexOf(uu) === -1) {
+                item.deviceArr.push(uu)
+              }
+            })
+          }
+        })
+      })
+      // console.log(findResult)
+      examIdToMp3Modal.deleteMany({}, (async err => {
+        // 先把集合清空
+        if (!err) {
+          await examIdToMp3Modal.collection.insert(findResult, (err, docs) => {
+            if (err) {
+              event.returnValue = {code: 0}
+            } else {
+              // console.log(docs)
+              // 主进程这边修改了代码需要重启
+              event.returnValue = {code: 1}
+            }
+          })
+        } else {
+          event.returnValue = {code: 0}
+        }
+      }))
+    }
   })
 
 

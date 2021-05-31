@@ -102,7 +102,7 @@
             filePath: theFilePath
           })
           if (result.code === 1) {
-            this.$message.success("导入数据成功")
+            this.$message.success("重复数据已被过滤,导入数据成功")
             this.readDumpFile()
             this.fileTypeImportFlag = ''
           } else {
@@ -117,6 +117,7 @@
             if (uu.type !== "audio/wav") {
               this.$message.error("存在导入的文件类型错误")
               that.$refs.fileBtn.value = ''
+              // 整个函数的return
               return
             }
           }
@@ -124,6 +125,11 @@
           // 先去数据库查出所有的考试id
           let examToDeviceArr = []
           let allExam = that.$electron.sendSync('getInitExamData_')
+          if (allExam.length === 0) {
+            this.$message.error("考试数据为空,请先导入考试数据")
+            that.$refs.fileBtn.value = ''
+            return
+          }
           let examArr = []
           allExam.forEach(item => {
             examArr.push(item._doc.examDesignId)
@@ -131,11 +137,16 @@
           // 分离出考试id与这场考试下的设备id,存储在数据库
           for (let ele of examArr) {
             let deviceArr_ = []
-            theFilePath.forEach(item => {
+            // 未带考试id的文件会被过滤
+            for (let item of theFilePath) {
               if (item.path.indexOf(ele) !== -1) {
                 deviceArr_.push(item.path)
+              } else {
+                this.$message.error("存在导入的文件格式错误")
+                that.$refs.fileBtn.value = ''
+                return
               }
-            })
+            }
             let obj = {}
             obj.examDesignId = ele
             obj.deviceArr = deviceArr_
@@ -145,16 +156,15 @@
           let result = that.$electron.sendSync('examToDeviceArrimportMp3', {
             examToDeviceArr: examToDeviceArr
           })
-          if (result.code === 1) {
-            this.$message.success("导入数据成功")
+          // console.log(result.code)
+          if (result.code === 0) {
+            this.$message.error("导入数据失败")
+            this.fileTypeImportFlag = ''
+          } else if (result.code === 1) {
+            this.$message.success("重复数据已被过滤,导入数据成功")
             this.readDumpFile()
             this.fileTypeImportFlag = ''
-          } else {
-            this.$message.success("导入数据失败,请联系管理员")
-            this.fileTypeImportFlag = ''
           }
-
-
         }
         that.$refs.fileBtn.value = ''
       },
