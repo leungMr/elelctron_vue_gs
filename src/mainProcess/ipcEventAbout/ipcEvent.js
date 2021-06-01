@@ -6,40 +6,6 @@ const fs = require('fs');
 const spawn = require('child_process').spawn
 export default function () {
   // *****************以下是数据库相关*******************************
-
-  //dump并查询
-  ipcMain.on('readDumpFile', (event) => {
-    let successFlag = true
-    let cmdPath = process.cwd() + "\\static\\mongodb"
-    let spawnObj = spawn('.\\bin\\mongodump.exe', ['-o', '.\\bin\\dump'], {cwd: cmdPath})
-    // 成功
-    spawnObj.stdout.on('data', function (chunk) {
-      console.log("此处从不打印")
-    });
-    // 失败
-    spawnObj.stderr.on('data', (data) => {
-      let fileInfo = data.toString()
-      if (fileInfo.indexOf("Failed") !== -1) {
-        successFlag = false
-      }
-    });
-    // 子进程关闭
-    // dump这种进程会自动死亡,与mongodb不同
-    spawnObj.on('close', function (code) {
-      if (successFlag === false) {
-        event.returnValue = {
-          code: 0
-        }
-      } else {
-        let allFiles = readFileFunc(cmdPath + "\\bin\\dump")
-        event.returnValue = {
-          code: 1,
-          data: allFiles
-        }
-      }
-
-    })
-  });
   // 读本地文件并获取进度
   ipcMain.on('importToLocalDataByJsonFile2', (event, arg) => {
     let readStream = fs.createReadStream(arg.filePath)
@@ -128,6 +94,8 @@ export default function () {
   ipcMain.on('examToDeviceArrimportMp3', async (event, arg) => {
     // console.log(arg)
     // 推送过来的对象 一定会带考试id
+    // 所有现存的考试id都会被推送过来
+    // 路径不在现存的考试id之内导不进去
     // 先查出音频表所有数据,不重复的再push进去
     // 同一个id所对应的数组下可能会重复
     let findResult = await examIdToMp3Modal.find()
@@ -144,8 +112,11 @@ export default function () {
     // ===
     else {
       // 前端那边已经把在考试之外的文件过滤了
+      // findResult包含所有考试 第一次写入音频文件便写入了所有考试
+      // 传过来的examToDeviceArr也包含所有考试
       findResult.forEach(item => {
         delete item._id
+        // 传过来的是所有考试以及对应的音频文件数组
         arg.examToDeviceArr.forEach(ele => {
           if (ele.examDesignId === item.examDesignId) {
             ele.deviceArr.forEach(uu => {
@@ -186,6 +157,26 @@ export default function () {
     }
   })
 
+  // 删除考试文本文件
+  ipcMain.on('deleteExamtext', async (event, arg) => {
+    // 删除文本数据
+    trainListModal.remove({examDesignId: arg}, (err, res) => {
+      if (err) {
+        event.returnValue = {code: 0}
+      } else {
+        examIdToMp3Modal.remove({examDesignId: arg}, (err2, res2) => {
+          if (err2) {
+            event.returnValue = {code: 0}
+          } else {
+            event.returnValue = {code: 1}
+          }
+        })
+      }
+    })
+
+
+  })
+
 
   // *****************以下是考核相关*******************************
   // 查询考核列表
@@ -218,24 +209,6 @@ export default function () {
     }
 
   });
-
-
-  // *****************以下是工具方法*******************************
-  // 定义一个读dump文件夹里面读文件的方法
-  let readFileFunc = (path) => {
-    // 读出数据库dump里面的东西
-    let folders = []
-    let files = fs.readdirSync(path);
-    // console.log(files)
-    files.forEach(function (item, index) {
-      if (item !== "gs_db") return
-      let fileSons = fs.readdirSync(`${path}\\${item}`)
-      let obj = {}
-      obj[item] = fileSons
-      folders.push(obj)
-    })
-    return folders;
-  }
 }
 
 
