@@ -67,7 +67,12 @@
     methods: {
       // 获取初始化考试列表数据
       getInitExamData() {
-        let allTrains = this.$electron.sendSync('getInitExamData_')
+        let allTrains2 = this.$electron.sendSync('getInitExamData_')
+        if(allTrains2.code===0){
+          this.$message.error("数据库服务错误")
+          return
+        }
+        let allTrains = allTrains2.data
         allTrains = allTrains.filter(item => {
           if (item._doc.examState === '3') {
             return item

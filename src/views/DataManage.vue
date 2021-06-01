@@ -11,43 +11,75 @@
     <!--内容区S-->
     <!--数据库文件导入S-->
     <div style="width: 100%;padding-top: 2px;">
-      <a-button @click="importJsonFile('databaseFileImport')">导入数据库文件</a-button>
+      <a-button @click="importJsonFile('databaseFileImport')">导入考试文本文件</a-button>
       <div
-        style="width: 80%;min-height: 100px;border: 1px solid #d9d9b7;margin:10px auto;"
+        style="width: 80%;min-height: 100px;max-height:250px;overflow:auto;border: 1px solid #d9d9b7;margin:10px auto;padding: 10px;"
         class="layout-left-top"
       >
-        <div
-          style="width: 100px;height: 50px;margin: 10px;"
-          class="layout-center"
-          v-for="(item,index) in dumpFiles"
-          :key="index"
-        >
-          <a-icon type="database" style="font-size: 30px;"/>
-          <div style="width: 100%;text-align: center;">{{item.substring(0,item.length-5)}}</div>
+        <div style="width: 100%" class="layout-left-top">
+          <div style="width: 40px;" class="layout-left-top">序号</div>
+          ---------
+          <div style="width: 150px;" class="layout-center-top">时间</div>
+          ---------
+          <div style="width: 150px;" class="layout-right-top">考试名称</div>
         </div>
+        <div style="width: 100%" class="layout-left-top" v-for="(item,index) in examTestFiles" :key="index">
+          <div style="width: 40px;" class="layout-left-top">{{index}}</div>
+          ---------
+          <div style="width: 150px;" class="layout-center-top">{{item._doc.beginTime}}</div>
+          ---------
+          <div style="width: 150px;" class="layout-right-top">{{item._doc.trainingTitleName}}</div>
+        </div>
+
       </div>
     </div>
     <!--数据库文件导入E-->
     <div style="height: 20px;"></div>
     <!--音频文件导入S-->
     <div style="width: 100%;padding-top: 2px;">
-      <a-button @click="importJsonFile('mp3FileImport')">导入音频文件</a-button>
+      <a-button @click="importJsonFile('mp3FileImport')">导入考试音频文件</a-button>
       <div
-        style="width: 80%;min-height: 100px;border: 1px solid #d9d9b7;margin:10px auto;"
+        style="width: 80%;min-height: 100px;max-height:250px;border: 1px solid #d9d9b7;margin:10px auto;overflow: auto;"
         class="layout-left-top"
       >
         <div
-          style="width: 100px;height: 50px;margin: 10px;"
-          class="layout-center"
-          v-for="(item,index) in []"
+          style="width: 100%;min-height: 100px;margin: 10px;"
+          class="layout-left-top"
+          v-for="(item,index) in allMp3Files"
           :key="index"
         >
-          <a-icon type="database" style="font-size: 30px;"/>
-          <div style="width: 100%;text-align: center;">{{item.substring(0,item.length-5)}}</div>
+          <div style="width: 100%;color: #7e6b5a;">{{index}}---{{item._doc.examDesignId}}</div>
+          <div
+            v-for="(ele,index2) in item._doc.deviceArr"
+            :key="index2+'110'"
+            style="width: 100%;"
+          >{{ele}}
+          </div>
+          <hr style="width: 100%;border-bottom: 0px dashed #d4d4b3;">
         </div>
       </div>
     </div>
     <!--音频文件导入E-->
+    <div style="height: 20px;"></div>
+    <!--数据库文件展示S-->
+    <!--<div style="width: 100%;padding-top: 2px;">-->
+    <!--  <a-button>数据库文件展示</a-button>-->
+    <!--  <div-->
+    <!--    style="width: 80%;min-height: 100px;border: 1px solid #d9d9b7;margin:10px auto;"-->
+    <!--    class="layout-left-top"-->
+    <!--  >-->
+        <!--<div-->
+        <!--  style="width: 100px;height: 50px;margin: 10px;"-->
+        <!--  class="layout-center"-->
+        <!--  v-for="(item,index) in dumpFiles"-->
+        <!--  :key="index"-->
+        <!--&gt;-->
+        <!--  <a-icon type="database" style="font-size: 30px;"/>-->
+        <!--  <div style="width: 100%;text-align: center;">{{item.substring(0,item.length-5)}}</div>-->
+        <!--</div>-->
+    <!--  </div>-->
+    <!--</div>-->
+    <!--数据库文件展示E-->
     <!--内容区E-->
     <!--数据导入通用S-->
     <input @change="importInformation($event)"
@@ -70,12 +102,18 @@
         fileTypeImportFlag: '',
         // 展示的集合
         dumpFiles: '',
+        // 音频文件
+        allMp3Files: [],
+        // 考试文本文件
+        examTestFiles: [],
       }
     },
     created() {
     },
     mounted() {
       this.readDumpFile()
+      this.readMp3Files()
+      this.readExamTestFiles()
     }
     ,
     methods: {
@@ -104,6 +142,7 @@
           if (result.code === 1) {
             this.$message.success("重复数据已被过滤,导入数据成功")
             this.readDumpFile()
+            this.readExamTestFiles()
             this.fileTypeImportFlag = ''
           } else {
             this.$message.success("导入数据失败,请联系管理员")
@@ -124,7 +163,13 @@
           let theFilePath = obj.target.files
           // 先去数据库查出所有的考试id
           let examToDeviceArr = []
-          let allExam = that.$electron.sendSync('getInitExamData_')
+          let allExam2 = that.$electron.sendSync('getInitExamData_')
+          if(allExam2.code === 0){
+            this.$message.error("数据库服务错误")
+            return;
+          }
+          let allExam = allExam2.data
+
           if (allExam.length === 0) {
             this.$message.error("考试数据为空,请先导入考试数据")
             that.$refs.fileBtn.value = ''
@@ -152,7 +197,6 @@
             obj.deviceArr = deviceArr_
             examToDeviceArr.push(obj)
           }
-          // 写入数据库 同步要拿到返回之后才能执行下一步
           let result = that.$electron.sendSync('examToDeviceArrimportMp3', {
             examToDeviceArr: examToDeviceArr
           })
@@ -163,29 +207,47 @@
           } else if (result.code === 1) {
             this.$message.success("重复数据已被过滤,导入数据成功")
             this.readDumpFile()
+            this.readMp3Files()
             this.fileTypeImportFlag = ''
           }
         }
         that.$refs.fileBtn.value = ''
       },
-      readDumpFile() {
-        let dumpFiles_ = this.$electron.sendSync('readDumpFile')
-        if (dumpFiles_.code === 0) {
-          this.$message.error("数据库错误")
-          return
-        }
-        let dumpFiles2 = dumpFiles_.data
-        // 如果gs_db里面没有集合 则dump不会dump gs_db  dumpFiles2就为[]
-        if (dumpFiles2.length === 0) {
-          this.dumpFiles = []
+      readMp3Files() {
+        let files = this.$electron.sendSync('readMp3File')
+        if (files.code === 1) {
+          this.allMp3Files = files.data
         } else {
-          this.dumpFiles = dumpFiles2[0]['gs_db'] ? dumpFiles2[0]['gs_db'] : []
-          this.dumpFiles = this.dumpFiles.filter(item => {
-            if (item.indexOf(".metadata.") === -1) {
-              return item
-            }
-          })
+          this.$message.error("数据库服务错误")
         }
+      },
+      readExamTestFiles() {
+        let files = this.$electron.sendSync('getInitExamData_')
+        if (files.code === 1) {
+          this.examTestFiles = files.data
+          console.log(this.examTestFiles)
+        } else {
+          this.$message.error("数据库服务错误")
+        }
+      },
+      readDumpFile() {
+        // let dumpFiles_ = this.$electron.sendSync('readDumpFile')
+        // if (dumpFiles_.code === 0) {
+        //   this.$message.error("数据库错误")
+        //   return
+        // }
+        // let dumpFiles2 = dumpFiles_.data
+        // // 如果gs_db里面没有集合 则dump不会dump gs_db  dumpFiles2就为[]
+        // if (dumpFiles2.length === 0) {
+        //   this.dumpFiles = []
+        // } else {
+        //   this.dumpFiles = dumpFiles2[0]['gs_db'] ? dumpFiles2[0]['gs_db'] : []
+        //   this.dumpFiles = this.dumpFiles.filter(item => {
+        //     if (item.indexOf(".metadata.") === -1) {
+        //       return item
+        //     }
+        //   })
+        // }
         this.$store.commit("SET_DATAFILESTATUS", false)
       },
       goHome() {

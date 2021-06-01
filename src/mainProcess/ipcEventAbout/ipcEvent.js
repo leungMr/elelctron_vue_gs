@@ -102,6 +102,12 @@ export default function () {
           return item
         }
       })
+      // console.log(fileData)
+      // 等于0 写数据库时会报错
+      if (fileData.length === 0) {
+        event.returnValue = {code: 1}
+        return
+      }
       // insert会把数组里面的东西全部导入
       // 集合名是在modal里面定义的
       await trainListModal.collection.insert(fileData, (err, docs) => {
@@ -170,18 +176,32 @@ export default function () {
     }
   })
 
+  // 读取音频文件
+  ipcMain.on('readMp3File', async (event, arg) => {
+    try {
+      let findResult = await examIdToMp3Modal.find()
+      event.returnValue = {code: 1, data: findResult}
+    } catch (e) {
+      event.returnValue = {code: 0, e}
+    }
+  })
+
 
   // *****************以下是考核相关*******************************
   // 查询考核列表
   ipcMain.on('getInitExamData_', async (event) => {
-    let findResult = await trainListModal.find()
-    // console.log(findResult)
-    event.returnValue = findResult
+    try {
+      let findResult = await trainListModal.find()
+      // console.log(findResult)
+      event.returnValue = {code: 1, data: findResult}
+    } catch (e) {
+      event.returnValue = {code: 0, e}
+    }
+
   });
 
   // 查询考核详情
   ipcMain.on('getTrainInfo_', async (event, arg) => {
-    // 需要联合查询 存在一张主表和两张附表
     try {
       let findResult = await trainListModal.findOne({examDesignId: arg})
       // console.log(findResult)
