@@ -56,30 +56,42 @@
         style="width: 80%;min-height: 100px;max-height:400px;border: 1px solid #d9d9b7;margin:10px auto;overflow: auto;"
         class="layout-left-top"
       >
-        <div
-          style="width: 100%;min-height: 100px;margin-top:10px;margin-left:10px;"
-          class="layout-left-top"
+        <template
           v-for="(item,index) in allMp3Files"
-          :key="index"
         >
-          <div style="width: 100%;" class="layout-left-top">
-            <div style="width: 40px;" class="layout-left-top">{{index}}</div>
-            ---------
-            <div style="width: 150px;" class="layout-center-top">{{getExamNameById(item._doc.examDesignId)}}</div>
-          </div>
           <div
-            v-for="(ele,index2) in item._doc.deviceArr"
-            :key="index2+'110'"
-            style="width: 100%;"
-            class="layout-side"
+            :key="index"
+            v-if="item._doc.deviceArr.length"
+            style="width: 100%;min-height: 100px;margin-top:10px;margin-left:10px;"
+            class="layout-left-top"
           >
-            <span>{{ele}}</span>
-            <span style="margin-right: 100px;cursor: pointer;">删除</span>
+            <div style="width: 100%;" class="layout-left-top">
+              <div style="width: 40px;" class="layout-left-top">{{index}}</div>
+              ---------
+              <div style="width: 150px;" class="layout-center-top">{{getExamNameById(item._doc.examDesignId)}}</div>
+            </div>
+            <div
+              v-for="(ele,index2) in item._doc.deviceArr"
+              :key="index2+'110'"
+              style="width: 100%;"
+              class="layout-side"
+            >
+              <span>{{ele}}</span>
+              <a-popconfirm
+                title="删除此音频文件?"
+                ok-text="确定"
+                cancel-text="取消"
+                @confirm="confirm_2(item,ele)"
+                @cancel="cancel_2"
+              >
+                <span style="margin-right: 100px;cursor: pointer;">删除</span>
+              </a-popconfirm>
 
 
+            </div>
+            <hr style="width: 100%;border-bottom: 0px dashed #d4d4b3;">
           </div>
-          <hr style="width: 100%;border-bottom: 0px dashed #d4d4b3;">
-        </div>
+        </template>
       </div>
     </div>
     <!--音频文件导入E-->
@@ -125,14 +137,33 @@
       confirm_1(item) {
         this.deleteTextExam(item)
       },
+      cancel_2() {
+        this.$message.success('你取消了删除')
+      },
+      confirm_2(item, ele) {
+        this.deleteMp3File(item, ele)
+      },
+      deleteMp3File(item, ele) {
+        let obj = {
+          examId: item._doc.examDesignId,
+          deleteData: ele
+        }
+        let result = this.$electron.sendSync('deleteMp3File', obj)
+        if (result.code === 1) {
+          this.$message.success("删除成功")
+          this.readMp3Files()
+        } else {
+          this.$message.success("删除失败")
+        }
+      },
       deleteTextExam(item) {
         console.log(item)
         let result = this.$electron.sendSync('deleteExamtext', item._doc.examDesignId)
-        if(result.code === 1){
+        if (result.code === 1) {
           this.$message.success("删除数据成功")
           this.readMp3Files()
           this.readExamTestFiles()
-        }else{
+        } else {
           this.$message.error("删除数据失败")
         }
       },

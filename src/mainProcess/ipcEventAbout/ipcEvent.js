@@ -177,6 +177,35 @@ export default function () {
 
   })
 
+  // 删除考试单独音频数据deleteMp3File
+  ipcMain.on('deleteMp3File', async (event, arg) => {
+    // 根据id查
+    // 组装数据
+    // 更新
+    examIdToMp3Modal.findOne({examDesignId: arg.examId}, (err, doc) => {
+      if (!err) {
+        // console.log(doc)
+        doc.deviceArr = doc.deviceArr.filter(uu => {
+          if (uu !== arg.deleteData) {
+            return uu
+          }
+        })
+        // 更新文档
+        examIdToMp3Modal.findByIdAndUpdate(doc._id, {deviceArr: doc.deviceArr}).then((doc, err) => {
+          if (!err) {
+            event.returnValue = {code: 1}
+          } else {
+            console.log(err)
+            event.returnValue = {code: 0}
+          }
+        })
+      } else {
+        event.returnValue = {code: 0}
+      }
+    })
+
+  })
+
 
   // *****************以下是考核相关*******************************
   // 查询考核列表

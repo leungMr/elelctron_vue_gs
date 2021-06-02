@@ -1,6 +1,7 @@
 const spawn = require("child_process").spawn
 let mongoose = require('mongoose')
 mongoose.set('useCreateIndex', true)
+mongoose.set('useFindAndModify', false)
 const DB_NAME = 'gs_db'
 const DB_URL = 'localhost:27017'
 let cmdPath = process.cwd() + "\\static\\mongodb"
