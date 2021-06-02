@@ -37,6 +37,7 @@
   export default {
     data() {
       return {
+        labelColor:["white","yellow","red","blue","orange","black","orange","black"],
         // 地图相关===========================
         mapBaseData: {
           lng: 0,
@@ -225,7 +226,7 @@
                 size: "11",
                 x: 0,
                 y: -60,
-                color: "rgba(255,255,255,1)"
+                color: this.labelColor[i]
               },
               image: {
                 // url: this.fileUrl + a[j].equipmentUnit.equipmentType.faceBase64,

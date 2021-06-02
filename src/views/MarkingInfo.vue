@@ -15,14 +15,17 @@
       <!--左S-->
       <div
         style="width:calc(100% - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
-        <div style="width: 100%;height: 100%;">
+        <div style="width: 100%;height: 100%;position: relative;">
           <!--左上S-->
           <div style="width: 100%;height: calc(100% - 60px);position:relative;padding-left: 4px;">
             <CesiumMaps ref="cesiumMaps"></CesiumMaps>
+            <VoiceControl
+              ref="voiceControl"
+            ></VoiceControl>
           </div>
           <!--左上E-->
           <!--左下S-->
-          <div style="width: 100%;height: 60px;overflow: hidden;">
+          <div style="width: 100%;height: 60px;overflow: hidden;position: absolute;left: 0;bottom: 0;">
             <DataPlayer @timeEcho="timeEcho"
                         @progressNotification="progressNotification"
                         :duration="duration"
@@ -51,6 +54,7 @@
   import MarkingInfoModal from "./template/MarkingInfoModal"
   import {getTimeDuration} from "./config/tool"
   import CesiumMaps from "../views/template/CesiumMaps"
+  import VoiceControl from "@/views/template/VoiceControl"
   import moment from 'moment'
 
   export default {
@@ -87,6 +91,8 @@
       this.$nextTick(() => {
         // 初始化设备位置
         this.$refs.cesiumMaps.initDeviceLocation(this.trainInfo)
+        // 初始化设备音量
+        this.$refs.voiceControl.initAllDeviceVoice(this.deviceAndUserArr, this.trainInfo.examDesignId)
       })
 
 
@@ -95,7 +101,8 @@
       ExameRightList,
       DataPlayer,
       MarkingInfoModal,
-      CesiumMaps
+      CesiumMaps,
+      VoiceControl
     },
     methods: {
       // 初始化时间组件

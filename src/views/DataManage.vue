@@ -180,6 +180,11 @@
         if (this.fileTypeImportFlag === 'databaseFileImport') {
 
           // 不管你导入多少个文件,我只取第一个
+          // if (obj.target.files.length>1) {
+          //   this.$message.error("导入的文件类型错误")
+          //   that.$refs.fileBtn.value = ''
+          //   return
+          // }
           if (obj.target.files[0].type !== "application/json") {
             this.$message.error("导入的文件类型错误")
             that.$refs.fileBtn.value = ''
@@ -233,6 +238,7 @@
           for (let item of theFilePath) {
             let flag = false
             for (let ele of examArr) {
+              // 满足两个条件,三段,中间项得是考试id
               // 路径中间一项必须包含现有的考试id
               // 也就是在现存id之外的路径会报错
               if (item.path.split('-')[1] === ele) {

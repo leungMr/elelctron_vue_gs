@@ -157,6 +157,17 @@ export default function () {
     }
   })
 
+  // 通过id获取考试音频文件
+  ipcMain.on('getAllMp3FilesById', async (event, arg) => {
+    try {
+      let findResult = await examIdToMp3Modal.findOne({examDesignId: arg})
+      event.returnValue = {code: 1, data: findResult}
+    } catch (e) {
+      event.returnValue = {code: 0, e}
+    }
+  })
+
+
   // 删除考试文本文件
   ipcMain.on('deleteExamtext', async (event, arg) => {
     // 删除文本数据
