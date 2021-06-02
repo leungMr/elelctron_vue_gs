@@ -41,7 +41,7 @@
         <audio
           v-for="(item,index) in allDeviceVoiceArr"
           :key="index"
-          src="file:///C:/Users/lenovo/Desktop/test/123%E5%89%AF%E6%9C%AC-589097132628115457-802007120002.wav"
+          :src="item.audioUrl"
           controls
           :ref="item.deviceId+'audio'"></audio>
       </div>
@@ -64,24 +64,39 @@
 
     },
     methods: {
-      //拿给父组件调用
-      initAllDeviceVoice(deviceAndUserArr, examDesignId) {
+      // 拿给父组件调用
+      async initAllDeviceVoice(deviceAndUserArr, examDesignId) {
+        let allMp3FilesById = await this.getAllMp3FilesById(examDesignId)
+        // console.log(allMp3FilesById)
         this.allDeviceVoiceArr = []
         deviceAndUserArr.forEach(item => {
           let obj = JSON.parse(JSON.stringify(item))
           obj.isVoice = true
+          allMp3FilesById.deviceArr.forEach(uu => {
+            if (uu.indexOf(obj.deviceId) !== -1) {
+              obj.audioUrl = uu
+            }
+          })
           this.allDeviceVoiceArr.push(obj)
+          // 等标签渲染完
+          this.$nextTick(() => {
+            this.$refs[obj.deviceId + 'audio'][0].src = obj.audioUrl
+            this.$refs[obj.deviceId + 'audio'][0].load()
+            // 暂停播放
+            this.$refs[obj.deviceId + 'audio'][0].pause()
+            // 初始化音量
+            this.$refs[obj.deviceId + 'audio'][0].volume = 0
+          })
         })
-        console.log(this.allDeviceVoiceArr)
       },
       // 根据本场考试id,去获取本场考试的所有音频路径
       getAllMp3FilesById(id) {
         return new Promise((resolve, reject) => {
           let result = this.$electron.sendSync('getAllMp3FilesById', id)
           if (result.code === 1) {
-            resolve(result.findResult)
+            resolve(result.data._doc)
           } else {
-            reject(result)
+            this.$message.error("数据库服务错误")
           }
         })
       },
