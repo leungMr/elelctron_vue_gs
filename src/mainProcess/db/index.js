@@ -7,6 +7,7 @@ const DB_URL = 'localhost:27017'
 let cmdPath = process.cwd() + "\\static\\mongodb"
 
 
+
 // 开启数据库服务
 function startMongodbService() {
   return new Promise((resolve, reject) => {

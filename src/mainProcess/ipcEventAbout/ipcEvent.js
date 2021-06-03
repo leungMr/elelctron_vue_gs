@@ -36,14 +36,16 @@ export default function () {
   // 读取本地json文件,导入考试列表
   ipcMain.on('importToLocalDataByJsonFile', (event, arg) => {
     // G:\gs_books\8.0electron\electron_gyy\static\mongodb\exportData\1.json  arg{filePath,tableName}
+    // console.log("45665")
     let filePath = arg.filePath
     fs.readFile(filePath, async function (err, data) {
       if (err) {
+        console.log("读取文件失败了")
         event.returnValue = {code: 0}
         return console.error(err)
       }
       let fileData = JSON.parse(data.toString())
-
+      console.log("读取文件成功")
       fileData.length > 0 && fileData.forEach(item => {
         if (item.trainingPlanEntity) {
           delete item.trainingPlanEntity
