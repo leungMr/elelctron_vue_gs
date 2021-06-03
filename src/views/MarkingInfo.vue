@@ -128,12 +128,22 @@
         // 1-----暂停
         // 2-----继续
         // console.log(e)
+        // console.log(e.explain)
+        this.$message.info(e.explain)
+        // 点击之后刚好开始
+        if (e.explain === "开始" || e.explain === "继续") {
+          this.$refs.voiceControl.timeEchoStart()
+        }
+        if (e.explain === "暂停") {
+          this.$refs.voiceControl.timeEchoPause()
+        }
       },
       // 当前的时间戳,一秒一秒的
       timeEcho(e) {
         // 组装右边实时信息
         this.getPointTimeData(e)
-
+        // 同步音频播放进度
+        this.$refs.voiceControl.getMp3PlayProcess(e)
       },
       // 初始化考试详情
       initTheTrainInfo() {
