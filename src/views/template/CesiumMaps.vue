@@ -97,14 +97,92 @@
       getRealTimeData(e) {
         // 设备通话
         let communications = []
+        // 设备组网
+        let equipmentNetworking = []
         e.forEach(item => {
           if (item.status === '业务通信') {
             communications.unshift(item)
             return
           }
+          if (item.status === '组网') {
+            equipmentNetworking.unshift(item)
+            return
+          }
         })
         this.opPhoneConnectLine(communications)
+        this.opNetworkLine(equipmentNetworking)
 
+      },
+      // 组网数据连线操作
+      opNetworkLine(netWorkings) {
+        // 以前的组网数据也会推送过来,所以取最新的一项
+        // console.log(netWorkings)
+        if (JSON.stringify(netWorkings) === JSON.stringify(this.lastNetArr)) {
+          // console.log("与上次组网想等")
+          return
+        }
+        this.lastNetArr = JSON.parse(JSON.stringify(netWorkings))
+        let allLine = command.getLines()
+        let allLine2 = JSON.parse(JSON.stringify(allLine))
+        // console.log(allLine2)
+        if (allLine2.length > 0) {
+          allLine2.forEach(item => {
+            if (item.id.endsWith('new2')) {
+              command.deleteEntity('label' + item.id)
+              command.deleteEntity(item.id)
+            } else {
+              // command.deleteEntity(item.id)
+            }
+          })
+        }
+        netWorkings.forEach(item => {
+          if (item.deviceIdWith.length === 0) {
+            this.breakMakeNetWorking(item.mainDeviceId, "组网")
+            return
+          }
+          let objArr = []
+          objArr = [item.mainDeviceId, ...item.deviceIdWith]
+          let allLocation = command.getImgs()
+          let allLocation2 = JSON.parse(JSON.stringify(allLocation))
+          let makeArr = this.orgnizeNetwork(objArr, allLocation2)
+          this.makeNetWorking(makeArr)
+        })
+      },
+      makeNetWorking(arr) {
+        // console.log(arr)
+        let maxleng = arr.length
+        arr.forEach((item, index) => {
+          let num = maxleng - index - 1
+          // console.log(num)
+          for (let i = 0; i < num; i++) {
+            // console.log(index + i + 1)
+            // 先删除
+            command.deleteEntity('label' + arr[index].deviceId + arr[index + i + 1].deviceId + 'new2')
+            command.deleteEntity(arr[index].deviceId + arr[index + i + 1].deviceId + 'new2')
+            // 后添加
+            command.addMarker(5, {
+              // 主+次+new2
+              id: arr[index].deviceId + arr[index + i + 1].deviceId + 'new2',
+              color: "rgba(255,255,255,1)",
+              text: '',
+              fontColor: "rgba(255,255,255,1)",
+              // 字体高度
+              altitude: 100,
+              start: {
+                name: arr[index].deviceId,
+                x: JSON.parse(arr[index].locationSongParam).lon / 100,
+                y: JSON.parse(arr[index].locationSongParam).lat / 100,
+                h: 1000
+              },
+              to: {
+                name: arr[index + i + 1].deviceId,
+                x: JSON.parse(arr[index + i + 1].locationSongParam).lon / 100,
+                y: JSON.parse(arr[index + i + 1].locationSongParam).lat / 100,
+                h: 1000
+              }
+            })
+          }
+        })
       },
       // 打电话连线或者是退打电话线
       opPhoneConnectLine(phoneInfos) {
