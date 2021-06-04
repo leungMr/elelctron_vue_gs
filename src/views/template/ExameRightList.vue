@@ -19,6 +19,7 @@
           :key="index"
           color="yellow"
         >
+          <!--业务通信S-->
           <div v-if="item.status==='业务通信' && item.idWith.length>0" style="color: yellow;">
             <span>{{item.mainId}}</span>
             <span>与</span>
@@ -30,6 +31,8 @@
             <span>退出</span>
             <span>业务通信</span>
           </div>
+          <!--业务通信E-->
+          <!--设备状态S-->
           <div v-else-if="item.status==='设备状态'&& item.state === '5'" style="color: green;">
             <span>{{item.mainId}}</span>
             <span>上线</span>
@@ -38,6 +41,20 @@
             <span>{{item.mainId}}</span>
             <span>下线</span>
           </div>
+          <!--设备状态E-->
+          <!--组网S-->
+          <div v-else-if="item.status==='组网' && item.idWith.length>0" style="color: orange;">
+            <span>{{item.mainId}}</span>
+            <span>与</span>
+            <span v-for="(ele,index) in item.idWith" :key="index+'111'">【{{ele}}】</span>
+            <span>进行组网</span>
+          </div>
+          <div v-else-if="item.status==='组网' && item.idWith.length===0" style="color: gray;">
+            <span>{{item.mainId}}</span>
+            <span>退出</span>
+            <span>组网</span>
+          </div>
+          <!--组网E-->
         </a-timeline-item>
       </a-timeline>
     </div>

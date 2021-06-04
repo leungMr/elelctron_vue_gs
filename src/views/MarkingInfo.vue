@@ -209,6 +209,29 @@
             this.allRealTimeData.push(obj)
           })
         }
+        // 组装组网=========================
+        if (data.equipmentNetworking && data.equipmentNetworking.length > 0) {
+          data.equipmentNetworking.forEach(item => {
+            // 过滤考试未开始的数据
+            if (moment(item.timeOr).diff(moment(this.trainInfo.beginTime), 'seconds') < 0) {
+              return
+            }
+            let obj = {}
+            // 通用
+            obj.status = "组网"
+            // 通用
+            obj.mainId = this.deviceIdToUser(item.networkingId)
+            // 通用
+            obj.time = item.timeOr
+            // 通用
+            obj.mainDeviceId = item.networkingId
+            obj.deviceIdWith = item.networkIdWith
+            obj.idWith = this.deviceArrToUserArr(item.networkIdWith)
+
+            this.allRealTimeData.push(obj)
+          })
+        }
+
         // 组装设备上下线=========================
         if (data.trainingDesignStateUpAndDowns && data.trainingDesignStateUpAndDowns.length > 0) {
           data.trainingDesignStateUpAndDowns.forEach(item => {
