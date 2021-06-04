@@ -73,6 +73,7 @@
       async initAllDeviceVoice(deviceAndUserArr, examDesignId) {
         let allMp3FilesById = await this.getAllMp3FilesById(examDesignId)
         // console.log(allMp3FilesById)
+        console.log("这里是不会执行的,因为楼上的promise没有返回值")
         this.allDeviceVoiceArr = []
         deviceAndUserArr.forEach(item => {
           let obj = JSON.parse(JSON.stringify(item))
@@ -101,7 +102,7 @@
       timeEchoStart() {
         this.allDeviceVoiceArr.forEach(item => {
           // 浏览器自动播放的Bug 需要去浏览器设置允许一下
-          this.$refs[item.deviceId + 'audio'][0].play().catch(err=>{
+          this.$refs[item.deviceId + 'audio'][0].play().catch(err => {
             // console.log(err)
           })
         })
@@ -121,7 +122,12 @@
       getAllMp3FilesById(id) {
         return new Promise((resolve, reject) => {
           let result = this.$electron.sendSync('getAllMp3FilesById', id)
+          // console.log(result)
           if (result.code === 1) {
+            if (result.data === null) {
+              this.$message.error("此场考试还未导入音频数据")
+              return
+            }
             resolve(result.data._doc)
           } else {
             this.$message.error("数据库服务错误")

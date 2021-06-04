@@ -163,6 +163,7 @@ export default function () {
   ipcMain.on('getAllMp3FilesById', async (event, arg) => {
     try {
       let findResult = await examIdToMp3Modal.findOne({examDesignId: arg})
+      // 音频表没有建立  返回的是findResult=null 也就是只导入了文本文件
       event.returnValue = {code: 1, data: findResult}
     } catch (e) {
       event.returnValue = {code: 0, e}
