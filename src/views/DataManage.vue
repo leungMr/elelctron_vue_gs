@@ -96,6 +96,16 @@
     </div>
     <!--音频文件导入E-->
     <div style="height: 20px;"></div>
+    <!--地图配置S-->
+    <!--<div style="width: 100%;padding-top: 2px;">-->
+    <!--  <a-button style="width: 144px;">地图配置</a-button>-->
+    <!--  <div-->
+    <!--    style="width: 80%;min-height: 100px;max-height:400px;border: 1px solid #d9d9b7;margin:10px auto;overflow: auto;"-->
+    <!--    class="layout-left-top"-->
+    <!--  >-->
+    <!--  </div>-->
+    <!--</div>-->
+    <!--地图配置E-->
     <input @change="importInformation($event)"
            id="fileInput" slot="content" style="display: none;"
            ref="fileBtn"

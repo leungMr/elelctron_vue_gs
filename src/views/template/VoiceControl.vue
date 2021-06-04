@@ -73,7 +73,6 @@
       async initAllDeviceVoice(deviceAndUserArr, examDesignId) {
         let allMp3FilesById = await this.getAllMp3FilesById(examDesignId)
         // console.log(allMp3FilesById)
-        console.log("这里是不会执行的,因为楼上的promise没有返回值")
         this.allDeviceVoiceArr = []
         deviceAndUserArr.forEach(item => {
           let obj = JSON.parse(JSON.stringify(item))

@@ -37,7 +37,7 @@
   export default {
     data() {
       return {
-        labelColor:["white","yellow","red","blue","orange","black","orange","black"],
+        labelColor: ["white", "yellow", "red", "blue", "orange", "black", "orange", "black"],
         // 地图相关===========================
         mapBaseData: {
           lng: 0,
@@ -47,12 +47,21 @@
         },
         viewModes: [
           {
+            name: "本地地图",
+            tooltip: "本地地图",
+            iconUrl: layer_yx,
+            type: 0,
+            url: require("../../assets/img/mapbase.jpg")
+          },
+          {
             name: "卫星影像",
             tooltip: "卫星影像",
             iconUrl: layer_yx,
             type: 0,
-            // url: "http://10.10.0.115:3000/title?x={x}&y={y}&z={z}"
-            url: require("../../assets/img/mapbase.jpg")
+            url: "http://10.10.0.99:8000/api/map/tile?source=openstreatmap_transport&x={x}&y={y}&z={z}"
+            // url: require("../../assets/img/mapbase.jpg")
+            // 可以测试这个地址是否可以请求到,如果可以请求到则采用远程地址
+            // http://10.10.0.99:8000/api/map/tile?source=openstreatmap_transport&x=1&y=1&z=1
           },
           // {
           //   name: "等高线图",
@@ -67,7 +76,7 @@
           //   iconUrl: layer_dg,
           //   type: 1,
           //   url: "http://10.10.0.99:8000/api/map/dem"
-          // }
+          // },
         ],
         // 逻辑数据相关===========================
         // 最后一次组网的数组(去重用)
@@ -77,6 +86,7 @@
       }
     },
     mounted() {
+      // 先去请求瓦片地址
       // 初始化地图
       this.addmap()
     },
@@ -259,7 +269,7 @@
             y: "29.534726",
             z: "13000"
           }, this.mode);
-        // 这个就是中心点位置,与主体软件是一样的
+        // 上面这个就是中心点位置,与主体软件是一样的
         viewer = init.viewer;
         command = new NipCesium.Command();
       },
