@@ -265,6 +265,8 @@
         // 组装通话=========================
         this.allRealTimeData = []
         if (data.communications && data.communications.length > 0) {
+          // 得到所有的通话节点
+          this.getPhoneNodes(data.communications)
           data.communications.forEach(item => {
             // 过滤考试未开始的数据
             if (moment(item.time).diff(moment(this.trainInfo.beginTime), 'seconds') < 0) {
@@ -338,6 +340,28 @@
           return 0;
         })
         return arr
+      },
+      // 得到所有的通话节点
+      getPhoneNodes(data) {
+        this.poneNodes = []
+        data && data.forEach(item => {
+          // 前提是得与人通话而不是退出通话
+          if (item.deviceIds.length === 0) return
+          let obj = {
+            content: {
+              call: '',
+              byCall: []
+            }
+          }
+          // 通话点距离开始时间的秒数
+          let spotDuration = moment(item.time).diff(moment(this.trainInfo.beginTime), 'seconds')
+          obj.left = (spotDuration / this.duration).toFixed(4) * 100 + '%'
+          obj.content.call = this.deviceIdToUser(item.deviceId)
+          obj.content.byCall = this.deviceArrToUserArr(item.deviceIds)
+          obj.isShow = false
+          this.poneNodes.push(obj)
+        })
+        // console.log(this.poneNodes)
       },
       // 设备id数组转人员数组
       deviceArrToUserArr(arr) {
