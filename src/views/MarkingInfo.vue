@@ -14,7 +14,7 @@
     <div style="width: 100%;height: calc(100% - 40px);padding-top: 2px;" class="layout-side">
       <!--左S-->
       <div
-        style="width:calc(100% - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
+        style="width:calc(100% - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);overflow: hidden;">
         <div style="width: 100%;height: 100%;position: relative;">
           <!--左上S-->
           <div style="width: 100%;height: calc(100% - 60px);position:relative;padding-left: 4px;">
@@ -25,14 +25,46 @@
           </div>
           <!--左上E-->
           <!--左下S-->
-          <div style="width: 100%;height: 60px;overflow: hidden;position: absolute;left: 0;bottom: 0;">
+          <div
+            style="width: 100%;height: 60px;position: absolute;left: 0;bottom: 0;"
+            class="layout-center  800"
+          >
             <DataPlayer @timeEcho="timeEcho"
                         @progressNotification="progressNotification"
                         :duration="duration"
                         ref="datapalyer"
                         style="bottom: 0;z-index: 1000;">
             </DataPlayer>
+            <!--通话锚点S-->
+            <div style="width: calc(100% - 140px);height: 100px;background-color: red;position: relative;z-index:1001;">
+              <template v-for="(item,index) in poneNodes">
+                <!--锚点S-->
+                <div
+                  style="position: absolute;width: 8px;height: 8px;border-radius: 50%;background-color: #DD4A68;bottom: 142px;"
+                  :style="{'left':item.left}"
+                  :key="index"
+                  @mouseover="mouseoverMaodian(item.left)"
+                  @mouseout="mouseleavessssMaodian(item.left)"
+                ></div>
+                <!--锚点E-->
+                <!--内容S-->
+                <div
+                  style="position: absolute;width: 120px;height: 50px;background-color: rgba(0,0,0,0.5);transform: translateX(-60px);color:#DD4A68;font-size: 13px;padding-left: 3px;border-radius: 5px;bottom: 155px;"
+                  :style="{'left':item.left}"
+                  :key="index+ 'w'"
+                  v-show="item.isShow"
+                >
+                  <span>{{item.content.call}}</span>
+                  与
+                  <span v-for="(ele,index2) in item.content.byCall" :key="index2">【{{ele}}】</span>
+                  通话
+                </div>
+                <!--内容E-->
+              </template>
+            </div>
+            <!--通话锚点E-->
           </div>
+
           <!--左下E-->
         </div>
       </div>
@@ -70,6 +102,36 @@
         pointRealTimeData: [],
         // 人员设置关联数组
         deviceAndUserArr: [],
+        // 通话锚点S
+        poneNodes: [
+          {
+            left: '0%',
+            content: {
+              call: "张三",
+              byCall: ["李四", "王麻子"]
+            },
+            isShow: false
+          },
+          {
+            left: '50%',
+            content: {
+              call: "张五",
+              byCall: ["李六", "王小二"]
+            },
+            isShow: false
+
+          },
+          {
+            left: '100%',
+            content: {
+              call: "张五",
+              byCall: ["李六", "王小二"]
+            },
+            isShow: false
+
+          }
+        ]
+        // 通话锚点E
       }
     },
     async mounted() {
@@ -105,6 +167,20 @@
       VoiceControl
     },
     methods: {
+      mouseoverMaodian(left) {
+        this.poneNodes.forEach(item => {
+          if (item.left === left) {
+            item.isShow = true
+          }
+        })
+      },
+      mouseleavessssMaodian(left) {
+        this.poneNodes.forEach(item => {
+          if (item.left === left) {
+            item.isShow = false
+          }
+        })
+      },
       // 初始化时间组件
       initDataPlayerTime(time1, time2) {
         this.duration = getTimeDuration(time1, time2)
