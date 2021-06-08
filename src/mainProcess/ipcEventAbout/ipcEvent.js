@@ -44,7 +44,10 @@ export default function () {
         event.returnValue = {code: 0}
         return console.error(err)
       }
-      let fileData = JSON.parse(data.toString())
+      let needArr = data.toString().split("OK--11")
+      // let fileData = JSON.parse(data.toString())
+      let fileData = needArr[0]
+      fileData = JSON.parse(fileData)
       console.log("读取文件成功")
       fileData.length > 0 && fileData.forEach(item => {
         if (item.trainingPlanEntity) {
