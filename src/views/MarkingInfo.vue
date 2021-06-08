@@ -3,12 +3,12 @@
     style="width: 100%;height: 100%;"
     :style="{'background-color':$publicConfig.backgroundColor}"
   >
-    <div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7"
+    <div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7;padding: 0 10px;"
          class="layout-side">
+      <a-icon type="rollback" style="font-size: 20px;margin-right: 20px;" @click="$router.push('/marking')"/>
       <span style="margin-left: 10px;font-size: 16px;">{{trainInfo.trainingTitleName}}
         <a-icon type="info-circle" style="margin-left: 0px;" @click="$refs.markingInfoModal.isShowTrainDetail = true"/>
       </span>
-      <a-icon type="rollback" style="font-size: 20px;margin-right: 20px;" @click="$router.push('/marking')"/>
     </div>
     <!--主体区域S-->
     <div style="width: 100%;height: calc(100% - 40px);padding-top: 2px;" class="layout-side">

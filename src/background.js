@@ -23,6 +23,54 @@ protocol.registerSchemesAsPrivileged([{
   }
 }])
 
+function createMenu() {
+  //定义菜单模板
+  const electron = require('electron');
+  const Menu = electron.Menu;
+  const template = [
+    {
+      label: '文件',
+      submenu: [
+        {
+          label: '最小化',
+          // role: 'about'
+          click: () => {
+            win.minimize();
+          }
+        },
+        {
+          label: '关闭',
+          // accelerator: 'Command+Q',
+          click: () => {
+            win.close();
+          }
+        }
+      ]
+    },
+    {
+      label: '应用',
+      submenu: [
+        {
+          label: '数据管理',
+          click: () => {
+            // console.log('复制');
+            win.webContents.send('gotoWhere', '数据管理');
+          }
+        },
+        {
+          label: '训练管理',
+          click: () => {
+            // console.log('剪切');
+            win.webContents.send('gotoWhere', '训练管理');
+          }
+        },
+      ]
+    }
+  ];
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+}
+
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
@@ -34,6 +82,10 @@ function createWindow() {
       webSecurity: false,
     }
   })
+
+
+  // 去除原生顶部菜单栏
+  // win.setMenu(null);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -70,6 +122,7 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
     createWindow()
+    createMenu()
   }
 })
 
@@ -86,6 +139,7 @@ app.on('ready', async () => {
     // }
   }
   createWindow()
+  createMenu()
 })
 
 // Exit cleanly on request from parent process in development mode.

@@ -6,14 +6,33 @@
 <script>
   export default {
     mounted() {
-      // let link = document.createElement('link')
-      // link.rel = 'stylesheet'
-      // link.href = 'http://' + '10.10.0.147:8000' + '/api/file/getFile/cdn/Cesium/Widgets/widgets.css'
-      // document.getElementsByTagName('head')[0].appendChild(link)
-      // let script = document.createElement('script')
-      // script.type = 'text/javascript'
-      // script.src = 'http://' + '10.10.0.147:8000' + '/api/file/getFile/cdn/Cesium/Cesium.js'
-      // document.getElementsByTagName('head')[0].appendChild(script)
+      this.$electron.on('gotoWhere', (event, message) => {
+        // console.log(message)
+        if (message === "数据管理") {
+          this.gotoData()
+          return
+        }
+        if (message === "训练管理") {
+          this.gotoTrain()
+          return
+        }
+
+      })
+    },
+    methods: {
+      gotoData() {
+        this.$store.commit("SET_DATAFILESTATUS", true)
+        setTimeout(() => {
+          this.$router.push('/data')
+        }, 1000)
+
+      },
+      gotoTrain() {
+        this.$store.commit("SET_DATATRAINSTATUS", true)
+        setTimeout(() => {
+          this.$router.push('/marking')
+        }, 1000)
+      }
     }
   }
 </script>
@@ -28,7 +47,8 @@
     margin: 0;
     padding: 0;
   }
-  *{
+
+  * {
     margin: 0;
     padding: 0;
   }

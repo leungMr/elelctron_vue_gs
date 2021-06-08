@@ -3,10 +3,10 @@
     style="width: 100%;height:100%;"
     :style="{'background-color':$publicConfig.backgroundColor}"
   >
-    <div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7"
+    <div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7;padding: 0px 10px;"
          class="layout-side">
-      <span style="margin-left: 10px;font-size: 16px;">训练列表</span>
       <a-icon type="home" style="font-size: 20px;margin-right: 20px;" @click="$router.push('/home')"/>
+      <span style="margin-left: 10px;font-size: 16px;">训练列表</span>
     </div>
     <!--主题区域S-->
     <div style="width: 100%;height: calc(100% - 40px);padding-top: 2px;">
