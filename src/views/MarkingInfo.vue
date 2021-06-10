@@ -3,24 +3,16 @@
     style="width: 100%;height: 100%;padding: 10px;"
     :style="{'background-color':$publicConfig.backgroundColor}"
   >
-    <!--总上S-->
-    <!--<div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7;padding: 0 10px;"-->
-    <!--     class="layout-side">-->
-    <!--  <a-icon type="rollback" style="font-size: 20px;margin-right: 20px;" @click="$router.push('/marking')"/>-->
-    <!--  <span style="margin-left: 10px;font-size: 16px;">{{trainInfo.trainingTitleName}}-->
-    <!--    <a-icon type="info-circle" style="margin-left: 0px;" @click="$refs.markingInfoModal.isShowTrainDetail = true"/>-->
-    <!--  </span>-->
-    <!--</div>-->
-    <!--总上E-->
     <!--总中S-->
     <div style="width: 100%;height: calc(100% - 0px - 60px);padding-top: 2px;" class="layout-side">
       <!--中左S-->
       <div
         style="height: 100%;width: 250px;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
         <div style="width: 100%;height: 40px;padding: 0 10px;" class="layout-side bor-b">
-          <a-icon type="rollback" style="font-size: 20px;"></a-icon>
+          <a-icon type="rollback" style="font-size: 20px;" @click="$router.push('/marking')"></a-icon>
           <span style="font-size: 20px;">{{trainInfo.trainingTitleName}}</span>
-          <a-icon type="info-circle" style="font-size: 20px;"></a-icon>
+          <a-icon type="info-circle" style="font-size: 20px;"
+                  @click="$refs.markingInfoModal.isShowTrainDetail = true"></a-icon>
         </div>
         <div style="width:100%;height: 220px;" class="bor-b layout-center-top">
           <span style="margin-top:15px;margin-bottom:10px;font-size:16px;">训练计时</span>
@@ -41,7 +33,7 @@
           <span style="font-size: 16px;">人员设备</span>
         </div>
         <div style="width:100%;height: calc(100% - 80px - 220px - 10px);">
-
+          <PeopleAndDevice></PeopleAndDevice>
         </div>
 
       </div>
@@ -121,6 +113,7 @@
   import CesiumMaps from "../views/template/CesiumMaps"
   import VoiceControl from "@/views/template/VoiceControl"
   import CountDown from "./template/CounDown"
+  import PeopleAndDevice from "./template/PeopleAndDevice"
   import moment from 'moment'
 
   export default {
@@ -199,7 +192,8 @@
       MarkingInfoModal,
       CesiumMaps,
       VoiceControl,
-      CountDown
+      CountDown,
+      PeopleAndDevice
     },
     methods: {
       handleStageTime(e) {
