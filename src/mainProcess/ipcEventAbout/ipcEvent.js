@@ -55,8 +55,8 @@ export default function () {
         }
         item.trainingDesignRelevanceList.length > 0 && item.trainingDesignRelevanceList.forEach(ele => {
           ele.netList.forEach(uu => {
-            uu.subject && delete uu.subject
-            uu.subjects && delete uu.subjects
+            // uu.subject && delete uu.subject
+            // uu.subjects && delete uu.subjects
           })
         })
       })

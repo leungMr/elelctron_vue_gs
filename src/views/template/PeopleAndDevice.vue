@@ -23,7 +23,8 @@
               <div class="height-100-per" style="width: calc(100% - 15px)">
                 <!--人的头像,状态,名字,编号S-->
                 <div class="layout-left-center relative margin-bottom-5-px">
-                  <img :src="items.userImg" style="width: 42px;height: 42px;"/>
+                  <!--<img :src="items.userImg" style="width: 42px;height: 42px;"/>-->
+                  <img src='../../../src/assets/img/user.png' style="width: 42px;height: 42px;"/>
                   <div style="width: calc(100% - 42px);text-align: left;padding-left: 10px">
                     <span :class="{'examUserName' : examUserName}"
                           :title="'学生姓名: '+items.username">{{items.username}}
@@ -52,7 +53,8 @@
                 <!--人的头像,状态,名字,编号E-->
                 <!--设备,状态,设备编号S-->
                 <div class="layout-left-center text-align-left relative">
-                  <img :src="items.deviceImg" style="width: 42px"/>
+                  <!--<img :src="items.deviceImg" style="width: 42px"/>-->
+                  <img src='../../../src/assets/img/TCR173 高速数据电台模拟器.png' style="width: 42px"/>
                   <div style="width: calc(100% - 42px);text-align: left;padding-left: 10px">
                     {{items.equiTitle}}
                   </div>
@@ -133,7 +135,6 @@
 
 
   export default {
-    name: "ExamineLeftList",
     data() {
       return {
         leftWidth: '220',
@@ -164,11 +165,11 @@
       controlVoice(id) {
         this.$emit('controlVoiceToSon2', id)
       },
-      //取消按钮
+      // 取消按钮
       handleCancel(e) {
         this.modalVisible = false;
       },
-      //获取组件modal的宽度
+      // 获取组件modal的宽度
       getTableWidth(data) {
         this.modalWidth = data + 50;
       },
@@ -176,15 +177,17 @@
       selectCard(e, sy, index) {
         console.log("点击了卡片")
       },
-      //获取左边人员列表数据
+      // 获取左边人员列表数据
       resolveData(e) {
+        // 这个数据不是直接获取的需要处理
+        // 有些参数可变的 人员状态 设备状态 整场考试状态
         this.assessmentData = e;
       },
       // 点击眼睛查看科目信息
       viewSubDetailTem(subId, userId) {
         console.log("你点击了眼睛")
       },
-      //左边收缩展开变化
+      // 左边收缩展开变化
       contractionExpansion(e1, e2, e3) {
         this.leftIcon = e1;
         this.leftWidth = e2;

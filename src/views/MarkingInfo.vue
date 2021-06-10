@@ -33,7 +33,7 @@
           <span style="font-size: 16px;">人员设备</span>
         </div>
         <div style="width:100%;height: calc(100% - 80px - 220px - 10px);">
-          <PeopleAndDevice></PeopleAndDevice>
+          <PeopleAndDevice ref="peopleAndDevice"></PeopleAndDevice>
         </div>
 
       </div>
@@ -129,36 +129,8 @@
         pointRealTimeData: [],
         // 人员设置关联数组
         deviceAndUserArr: [],
-        // 通话锚点S
-        poneNodes: [
-          {
-            left: '0%',
-            content: {
-              call: "张三",
-              byCall: ["李四", "王麻子"]
-            },
-            isShow: false
-          },
-          {
-            left: '50%',
-            content: {
-              call: "张五",
-              byCall: ["李六", "王小二"]
-            },
-            isShow: false
-
-          },
-          {
-            left: '100%',
-            content: {
-              call: "张五",
-              byCall: ["李六", "王小二"]
-            },
-            isShow: false
-
-          }
-        ]
-        // 通话锚点E
+        // 通话锚点
+        poneNodes: []
       }
     },
     async mounted() {
@@ -182,9 +154,9 @@
         this.$refs.cesiumMaps.initDeviceLocation(this.trainInfo)
         // 初始化设备音量
         // this.$refs.voiceControl.initAllDeviceVoice(this.deviceAndUserArr, this.trainInfo.examDesignId)
+        // 初始化人员设备信息,这是一个数组,里面装的考试的组信息
+        this.initDeviceAndPeople(this.trainInfo.trainingDesignRelevanceList)
       })
-
-
     },
     components: {
       ExameRightList,
@@ -196,6 +168,34 @@
       PeopleAndDevice
     },
     methods: {
+      // 初始化人员设备组件
+      initDeviceAndPeople(e) {
+        console.log(e)
+        e.forEach(item => {
+          item.netList.forEach(ele => {
+            // 可变值S
+            ele.deviceState = ""
+            // 离线
+            ele.userState = "1"
+            // 可变值E
+            ele.deviceId = ele.examineUser.deviceId
+            ele.militaryId = ele.examineUser.userEntity.militaryId
+            ele.userId = ele.examineUser.userId
+            ele.devicename = ele.equipmentUnit.deviceCode
+            ele.equiTitle = ele.equipmentUnit.equipmentName
+            ele.deviceImg = ele.equipmentUnit.equipmentType.faceBase64
+            ele.username = ele.examineUser.userEntity.name
+            ele.userImg = ele.examineUser.userEntity.faceBase64
+            ele.subject = ele.subject
+            // ele.relationTemplateEntity = ele.relationTemplateEntity
+            // ele.secondRelation = ele.secondRelation
+            // ele.seatIndex = ele.seatIndex
+            // ele.equipmentAlias = ele.equipmentAlias
+          })
+        })
+        this.$refs.peopleAndDevice.resolveData(e)
+      },
+      // 处理阶段时间
       handleStageTime(e) {
         console.log(e)
       },
