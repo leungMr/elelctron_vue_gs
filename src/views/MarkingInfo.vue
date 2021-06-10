@@ -1,82 +1,115 @@
 <template>
   <div
-    style="width: 100%;height: 100%;"
+    style="width: 100%;height: 100%;padding: 10px;"
     :style="{'background-color':$publicConfig.backgroundColor}"
   >
-    <div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7;padding: 0 10px;"
-         class="layout-side">
-      <a-icon type="rollback" style="font-size: 20px;margin-right: 20px;" @click="$router.push('/marking')"/>
-      <span style="margin-left: 10px;font-size: 16px;">{{trainInfo.trainingTitleName}}
-        <a-icon type="info-circle" style="margin-left: 0px;" @click="$refs.markingInfoModal.isShowTrainDetail = true"/>
-      </span>
-    </div>
-    <!--主体区域S-->
-    <div style="width: 100%;height: calc(100% - 40px);padding-top: 2px;" class="layout-side">
-      <!--左S-->
+    <!--总上S-->
+    <!--<div style="width: 100%;height: 40px;border-bottom: 1px solid #d9d9b7;padding: 0 10px;"-->
+    <!--     class="layout-side">-->
+    <!--  <a-icon type="rollback" style="font-size: 20px;margin-right: 20px;" @click="$router.push('/marking')"/>-->
+    <!--  <span style="margin-left: 10px;font-size: 16px;">{{trainInfo.trainingTitleName}}-->
+    <!--    <a-icon type="info-circle" style="margin-left: 0px;" @click="$refs.markingInfoModal.isShowTrainDetail = true"/>-->
+    <!--  </span>-->
+    <!--</div>-->
+    <!--总上E-->
+    <!--总中S-->
+    <div style="width: 100%;height: calc(100% - 0px - 60px);padding-top: 2px;" class="layout-side">
+      <!--中左S-->
       <div
-        style="width:calc(100% - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);overflow: hidden;">
+        style="height: 100%;width: 250px;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
+        <div style="width: 100%;height: 40px;padding: 0 10px;" class="layout-side bor-b">
+          <a-icon type="rollback" style="font-size: 20px;"></a-icon>
+          <span style="font-size: 20px;">{{trainInfo.trainingTitleName}}</span>
+          <a-icon type="info-circle" style="font-size: 20px;"></a-icon>
+        </div>
+        <div style="width:100%;height: 220px;" class="bor-b layout-center-top">
+          <span style="margin-top:15px;margin-bottom:10px;font-size:16px;">训练计时</span>
+          <CountDown
+            ref="count1"
+            color="#FFEEBB"
+            :active="true">
+          </CountDown>
+          <span style="font-size:16px;margin-bottom:10px;">阶段计时</span>
+          <CountDown
+            ref="count2"
+            color="#FFEEBB"
+            :active="true">
+          </CountDown>
+        </div>
+        <div style="height:10px;"></div>
+        <div style="width: 100%;height: 40px;padding: 0 10px;" class="layout-center   bor-b">
+          <span style="font-size: 16px;">人员设备</span>
+        </div>
+        <div style="width:100%;height: calc(100% - 80px - 220px - 10px);">
+
+        </div>
+
+      </div>
+      <!--中左E-->
+      <!--中中S-->
+      <div
+        style="width:calc(100% - 250px - 10px - 250px - 10px);height: 100%;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
         <div style="width: 100%;height: 100%;position: relative;">
-          <!--左上S-->
-          <div style="width: 100%;height: calc(100% - 60px);position:relative;padding-left: 4px;">
+          <div style="width: 100%;height: calc(100% - 0px);position:relative;">
             <CesiumMaps ref="cesiumMaps"></CesiumMaps>
             <VoiceControl
               ref="voiceControl"
             ></VoiceControl>
           </div>
-          <!--左上E-->
-          <!--左下S-->
-          <div
-            style="width: 100%;height: 60px;position: absolute;left: 0;bottom: 0;"
-            class="layout-center  800"
-          >
-            <DataPlayer @timeEcho="timeEcho"
-                        @progressNotification="progressNotification"
-                        :duration="duration"
-                        ref="datapalyer"
-                        style="bottom: 0;z-index: 1000;">
-            </DataPlayer>
-            <!--通话锚点S-->
-            <div style="width: calc(100% - 140px);height: 100px;background-color: red;position: relative;z-index:1001;">
-              <template v-for="(item,index) in poneNodes">
-                <!--锚点S-->
-                <div
-                  style="position: absolute;width: 8px;height: 8px;border-radius: 50%;background-color: #DD4A68;bottom: 142px;"
-                  :style="{'left':item.left}"
-                  :key="index"
-                  @mouseover="mouseoverMaodian(item.left)"
-                  @mouseout="mouseleavessssMaodian(item.left)"
-                ></div>
-                <!--锚点E-->
-                <!--内容S-->
-                <div
-                  style="position: absolute;width: 120px;height: 50px;background-color: rgba(0,0,0,0.5);transform: translateX(-60px);color:#DD4A68;font-size: 13px;padding-left: 3px;border-radius: 5px;bottom: 155px;"
-                  :style="{'left':item.left}"
-                  :key="index+ 'w'"
-                  v-show="item.isShow"
-                >
-                  <span>{{item.content.call}}</span>
-                  与
-                  <span v-for="(ele,index2) in item.content.byCall" :key="index2">【{{ele}}】</span>
-                  通话
-                </div>
-                <!--内容E-->
-              </template>
-            </div>
-            <!--通话锚点E-->
-          </div>
-
-          <!--左下E-->
         </div>
       </div>
-      <!--左E-->
-      <!--右S-->
+      <!--中中E-->
+      <!--中右S-->
       <div
         style="width: 250px;height: 100%;border-left: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
         <ExameRightList ref="exameRightList"></ExameRightList>
       </div>
-      <!--右E-->
+      <!--中右E-->
     </div>
-    <!--主体区域E-->
+    <!--总中E-->
+    <!--总下S-->
+    <div style="width: 100%;height: 60px;">
+      <div
+        style="width: 100%;height: 60px;position: absolute;left: 0;bottom: 0;overflow: hidden;"
+        class="layout-center  800"
+      >
+        <DataPlayer @timeEcho="timeEcho"
+                    @progressNotification="progressNotification"
+                    :duration="duration"
+                    ref="datapalyer"
+                    style="bottom: 0;z-index: 1000;">
+        </DataPlayer>
+        <!--通话锚点S-->
+        <div style="width: calc(100% - 140px);height: 100px;background-color: red;position: relative;z-index:1001;">
+          <template v-for="(item,index) in poneNodes">
+            <!--锚点S-->
+            <div
+              style="position: absolute;width: 8px;height: 8px;border-radius: 50%;background-color: #DD4A68;bottom: 142px;"
+              :style="{'left':item.left}"
+              :key="index"
+              @mouseover="mouseoverMaodian(item.left)"
+              @mouseout="mouseleavessssMaodian(item.left)"
+            ></div>
+            <!--锚点E-->
+            <!--内容S-->
+            <div
+              style="position: absolute;width: 120px;height: 50px;background-color: rgba(0,0,0,0.5);transform: translateX(-60px);color:#DD4A68;font-size: 13px;padding-left: 3px;border-radius: 5px;bottom: 155px;"
+              :style="{'left':item.left}"
+              :key="index+ 'w'"
+              v-show="item.isShow"
+            >
+              <span>{{item.content.call}}</span>
+              与
+              <span v-for="(ele,index2) in item.content.byCall" :key="index2">【{{ele}}】</span>
+              通话
+            </div>
+            <!--内容E-->
+          </template>
+        </div>
+        <!--通话锚点E-->
+      </div>
+    </div>
+    <!--总下E-->
     <MarkingInfoModal :trainInfo="trainInfo" ref="markingInfoModal"></MarkingInfoModal>
   </div>
 </template>
@@ -87,6 +120,7 @@
   import {getTimeDuration} from "./config/tool"
   import CesiumMaps from "../views/template/CesiumMaps"
   import VoiceControl from "@/views/template/VoiceControl"
+  import CountDown from "./template/CounDown"
   import moment from 'moment'
 
   export default {
@@ -154,7 +188,7 @@
         // 初始化设备位置
         this.$refs.cesiumMaps.initDeviceLocation(this.trainInfo)
         // 初始化设备音量
-        this.$refs.voiceControl.initAllDeviceVoice(this.deviceAndUserArr, this.trainInfo.examDesignId)
+        // this.$refs.voiceControl.initAllDeviceVoice(this.deviceAndUserArr, this.trainInfo.examDesignId)
       })
 
 
@@ -164,9 +198,13 @@
       DataPlayer,
       MarkingInfoModal,
       CesiumMaps,
-      VoiceControl
+      VoiceControl,
+      CountDown
     },
     methods: {
+      handleStageTime(e) {
+        console.log(e)
+      },
       mouseoverMaodian(left) {
         this.poneNodes.forEach(item => {
           if (item.left === left) {
@@ -220,6 +258,10 @@
         this.getPointTimeData(e)
         // 同步音频播放进度
         this.$refs.voiceControl.getMp3PlayProcess(e)
+        // 训练计时
+        this.$refs.count1.autoSetTime(e * 1000)
+        // 处理阶段计时
+        this.handleStageTime(e)
       },
       // 初始化考试详情
       initTheTrainInfo() {
@@ -393,4 +435,24 @@
     }
   }
 </script>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  .bor-t {
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+  }
+
+  .bor-b {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+  }
+
+  .bor-l {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+  }
+
+  .bor-r {
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+  }
+</style>
