@@ -8,6 +8,7 @@ let trainListModalSchema = new Schema({
   examState: String,
   communications: Array,
   trainingDesignRelevanceList: Array,
+  trainingPlanEntity:Array
 })
 module.exports = mongoose.model('trainListModal', trainListModalSchema, 'trainList')
 

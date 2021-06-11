@@ -47,6 +47,7 @@
             <VoiceControl
               ref="voiceControl"
             ></VoiceControl>
+            <OperationControl ref="operationControl"></OperationControl>
           </div>
         </div>
       </div>
@@ -115,6 +116,7 @@
   import VoiceControl from "@/views/template/VoiceControl"
   import CountDown from "./template/CounDown"
   import PeopleAndDevice from "./template/PeopleAndDevice"
+  import OperationControl from "@/views/template/OperationControl";
   import moment from 'moment'
 
   export default {
@@ -166,7 +168,8 @@
       CesiumMaps,
       VoiceControl,
       CountDown,
-      PeopleAndDevice
+      PeopleAndDevice,
+      OperationControl
     },
     methods: {
       // 初始化人员设备组件
@@ -204,8 +207,6 @@
         let pointRealTimeData2 = JSON.parse(JSON.stringify(pointRealTimeData))
         // 反转这样会改变原数组
         pointRealTimeData2.reverse()
-        console.log(pointRealTimeData2)
-        // console.log(currentGroupInfo)
         if (pointRealTimeData2.length === 0) {
           // 全部变为离线
           this.initDeviceAndPeople(currentGroupInfo)
@@ -222,12 +223,12 @@
             })
           }
         })
-        console.log(currentGroupInfo)
         this.$refs.peopleAndDevice.resolveData(currentGroupInfo)
       },
 
       // 处理卫勤各个阶段时间的展示
       handleStageTime(e) {
+        // 节点开始和结束信息需要查另外一张表
         console.log(e)
       },
       mouseoverMaodian(left) {

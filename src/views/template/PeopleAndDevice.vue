@@ -87,7 +87,7 @@
                         <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin-right: 10px;">
                           课目信息 : {{items.subject.subjectName}}
                         </div>
-                        <a-icon type="eye" @click="viewSubDetailTem(items.subject.id,items.userId)"/>
+                        <!--<a-icon type="eye" @click="viewSubDetailTem(items.subject.id,items.userId)"/>-->
                       </div>
                     </a-tooltip>
                   </p>

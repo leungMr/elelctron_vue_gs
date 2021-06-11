@@ -51,7 +51,7 @@ export default function () {
       console.log("读取文件成功")
       fileData.length > 0 && fileData.forEach(item => {
         if (item.trainingPlanEntity) {
-          delete item.trainingPlanEntity
+          // delete item.trainingPlanEntity
         }
         item.trainingDesignRelevanceList.length > 0 && item.trainingDesignRelevanceList.forEach(ele => {
           ele.netList.forEach(uu => {

@@ -1,19 +1,19 @@
 <template>
   <div style="width: 100%;height: 100%;position:relative;">
-    <div class="base-map-bar">
-      <div style="height: 100%;width: 100%">
-        <div style="height: 100%; float: left">
-          经度：{{mapBaseData.lng}}
-          |
-          纬度：{{mapBaseData.lat}}
-          |
-          高程：{{mapBaseData.height}}米
-        </div>
-        <div style="height: 100%; float: right">
-          镜头高度:{{mapBaseData.cameraHeight}}米
-        </div>
-      </div>
-    </div>
+    <!--<div class="base-map-bar">-->
+      <!--<div style="height: 100%;width: 100%">-->
+      <!--  <div style="height: 100%; float: left">-->
+      <!--    经度：{{mapBaseData.lng}}-->
+      <!--    |-->
+      <!--    纬度：{{mapBaseData.lat}}-->
+      <!--    |-->
+      <!--    高程：{{mapBaseData.height}}米-->
+      <!--  </div>-->
+      <!--  <div style="height: 100%; float: right">-->
+      <!--    镜头高度:{{mapBaseData.cameraHeight}}米-->
+      <!--  </div>-->
+      <!--</div>-->
+    <!--</div>-->
     <div style="position: absolute;bottom: 40px;right: 53px;z-index: 99;">
       <a-icon type="environment" title="回到起始点" style="font-size: 20px" @click="positionMe"/>
     </div>
@@ -308,7 +308,7 @@
               alt: a[j].z === undefined ? 500 : Number(a[j].z),
               // 初始化设备在地图上的高度
               // 是否允许拖动设备
-              noDragging: true,
+              noDragging: false,
               label: {
                 name: a[j].examineUser.userEntity.name,
                 size: "11",
@@ -434,6 +434,20 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+  .base-map-bar {
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 13px;
+    color: #fff;
+    z-index: 999;
+  }
+</style>
 
 
 
