@@ -31,24 +31,24 @@
                     </span>
                     <span :class="{'deviceCodeLim' : deviceCodeLim}" :title="'证件号: '+ items.militaryId">{{items.militaryId}}</span>
                   </div>
-                  <div class="absolute" style="top: -10px;left: 36px">
-                    <!-- 上线 -->
-                    <div v-if="items.userState === '2'" title="上线">
-                      <div class="nip-badge nip-badge-success"></div>
-                    </div>
-                    <!-- 考核中 -->
-                    <div v-if="items.userState === '3'" title="考核中">
-                      <div class="nip-badge nip-badge-processing"></div>
-                    </div>
-                    <!-- 已交卷 -->
-                    <div v-else-if="items.userState === '4'" title="已交卷">
-                      <div class="nip-badge nip-badge-warning"></div>
-                    </div>
-                    <!-- 离线 -->
-                    <div v-else-if="items.userState === '1'" title="离线">
-                      <div class="nip-badge nip-badge-default"></div>
-                    </div>
-                  </div>
+                  <!--<div class="absolute" style="top: -10px;left: 36px">-->
+                  <!--  &lt;!&ndash; 上线 &ndash;&gt;-->
+                  <!--  <div v-if="items.userState === '2'" title="上线">-->
+                  <!--    <div class="nip-badge nip-badge-success"></div>-->
+                  <!--  </div>-->
+                  <!--  &lt;!&ndash; 考核中 &ndash;&gt;-->
+                  <!--  <div v-if="items.userState === '3'" title="考核中">-->
+                  <!--    <div class="nip-badge nip-badge-processing"></div>-->
+                  <!--  </div>-->
+                  <!--  &lt;!&ndash; 已交卷 &ndash;&gt;-->
+                  <!--  <div v-else-if="items.userState === '4'" title="已交卷">-->
+                  <!--    <div class="nip-badge nip-badge-warning"></div>-->
+                  <!--  </div>-->
+                  <!--  &lt;!&ndash; 离线 &ndash;&gt;-->
+                  <!--  <div v-else-if="items.userState === '1'" title="离线">-->
+                  <!--    <div class="nip-badge nip-badge-default"></div>-->
+                  <!--  </div>-->
+                  <!--</div>-->
                 </div>
                 <!--人的头像,状态,名字,编号E-->
                 <!--设备,状态,设备编号S-->
@@ -181,7 +181,7 @@
       resolveData(e) {
         // 这个数据不是直接获取的需要处理
         // 有些参数可变的 人员状态 设备状态 整场考试状态
-        this.assessmentData = e;
+        this.assessmentData = JSON.parse(JSON.stringify(e))
       },
       // 点击眼睛查看科目信息
       viewSubDetailTem(subId, userId) {

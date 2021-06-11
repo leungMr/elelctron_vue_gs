@@ -32,7 +32,7 @@
         <div style="width: 100%;height: 40px;padding: 0 10px;" class="layout-center   bor-b">
           <span style="font-size: 16px;">人员设备</span>
         </div>
-        <div style="width:100%;height: calc(100% - 80px - 220px - 10px);">
+        <div style="width:100%;height: calc(100% - 80px - 220px - 10px);overflow: auto;">
           <PeopleAndDevice ref="peopleAndDevice"></PeopleAndDevice>
         </div>
 
@@ -72,7 +72,8 @@
                     style="bottom: 0;z-index: 1000;">
         </DataPlayer>
         <!--通话锚点S-->
-        <div style="width: calc(100% - 140px);height: 100px;background-color: transparent;position: relative;z-index:1001;">
+        <div
+          style="width: calc(100% - 140px);height: 100px;background-color: transparent;position: relative;z-index:1001;">
           <template v-for="(item,index) in poneNodes">
             <!--锚点S-->
             <div
@@ -198,14 +199,31 @@
         // console.log(this.trainInfo.trainingDesignRelevanceList)
       },
       // 根据时间处理人员设备组件
+      // this.trainInfo.trainingDesignRelevanceList作为第二个参数也会自动被改变
       handelDeviceAndPeopleByTime(pointRealTimeData, currentGroupInfo) {
-        console.log(pointRealTimeData)
-        console.log(currentGroupInfo)
-        pointRealTimeData.forEach(item=>{
-          if(item.status === "设备状态"){
-
+        let pointRealTimeData2 = JSON.parse(JSON.stringify(pointRealTimeData))
+        // 反转这样会改变原数组
+        pointRealTimeData2.reverse()
+        console.log(pointRealTimeData2)
+        // console.log(currentGroupInfo)
+        if (pointRealTimeData2.length === 0) {
+          // 全部变为离线
+          this.initDeviceAndPeople(currentGroupInfo)
+          return
+        }
+        pointRealTimeData2.forEach(item => {
+          if (item.status === "设备状态") {
+            currentGroupInfo.forEach(ele => {
+              ele.netList.forEach(uu => {
+                if (uu.devicename === item.mainDeviceId) {
+                  uu.deviceState = item.state
+                }
+              })
+            })
           }
         })
+        console.log(currentGroupInfo)
+        this.$refs.peopleAndDevice.resolveData(currentGroupInfo)
       },
 
       // 处理卫勤各个阶段时间的展示
@@ -371,6 +389,7 @@
             let obj = {}
             obj.status = "设备状态"
             obj.mainId = this.deviceIdToUser(item.deviceId)
+            obj.mainDeviceId = item.deviceId
             obj.time = item.beginTime
             obj.state = item.upAndDownState
             this.allRealTimeData.push(obj)
