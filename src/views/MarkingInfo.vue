@@ -1,6 +1,6 @@
 <template>
   <div
-    style="width: 100%;height: 100%;padding: 10px;"
+    style="width: 100%;height: 100%;padding: 10px;overflow: hidden;"
     :style="{'background-color':$publicConfig.backgroundColor}"
   >
     <!--总中S-->
@@ -62,7 +62,7 @@
     <!--总下S-->
     <div style="width: 100%;height: 60px;">
       <div
-        style="width: 100%;height: 60px;position: absolute;left: 0;bottom: 0;overflow: hidden;"
+        style="width: 100%;height: 60px;position: relative;"
         class="layout-center  800"
       >
         <DataPlayer @timeEcho="timeEcho"
@@ -72,7 +72,7 @@
                     style="bottom: 0;z-index: 1000;">
         </DataPlayer>
         <!--通话锚点S-->
-        <div style="width: calc(100% - 140px);height: 100px;background-color: red;position: relative;z-index:1001;">
+        <div style="width: calc(100% - 140px);height: 100px;background-color: transparent;position: relative;z-index:1001;">
           <template v-for="(item,index) in poneNodes">
             <!--锚点S-->
             <div
@@ -170,7 +170,7 @@
     methods: {
       // 初始化人员设备组件
       initDeviceAndPeople(e) {
-        console.log(e)
+        // console.log(e)
         e.forEach(item => {
           item.netList.forEach(ele => {
             // 可变值S
@@ -194,8 +194,21 @@
           })
         })
         this.$refs.peopleAndDevice.resolveData(e)
+        // e就是楼下这位家伙,所以楼下这位家伙也会被改变
+        // console.log(this.trainInfo.trainingDesignRelevanceList)
       },
-      // 处理阶段时间
+      // 根据时间处理人员设备组件
+      handelDeviceAndPeopleByTime(pointRealTimeData, currentGroupInfo) {
+        console.log(pointRealTimeData)
+        console.log(currentGroupInfo)
+        pointRealTimeData.forEach(item=>{
+          if(item.status === "设备状态"){
+
+          }
+        })
+      },
+
+      // 处理卫勤各个阶段时间的展示
       handleStageTime(e) {
         console.log(e)
       },
@@ -225,8 +238,10 @@
             return item
           }
         })
-        // 渲染实时信息组件
+        // 渲染右侧实时信息组件
         this.$refs.exameRightList.getRealTimeData(this.pointRealTimeData)
+        // 渲染左侧人员组件
+        this.handelDeviceAndPeopleByTime(this.pointRealTimeData, this.trainInfo.trainingDesignRelevanceList)
         // 渲染地图
         this.$refs.cesiumMaps.getRealTimeData(this.pointRealTimeData)
       },
