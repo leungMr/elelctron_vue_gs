@@ -1,45 +1,68 @@
 <template>
   <div
-    style="width: 200px;height: 400px;position: absolute;left: 4px;top: 10%;"
+    style="width: 200px;height: 400px;position: absolute;bottom:60px;left:0;"
   >
-    <div style="width: 100%;height: 100%;">
-      <div
-        class="disturb"
-        v-if="openDisturb"
-        style="width:30px;height: 35px;"
-      >
-        <a-tooltip>
-          <template slot="title">
-            展开音量操作框
-          </template>
-          <a-icon @click="openDisturb=false" style="font-size: 25px;line-height: 25px;color: #fff" type="right"/>
-        </a-tooltip>
-      </div>
+    <div
+      style="width: 100%;height: 100%;position:absolute;top:0;transition: all ease 0.5s;"
+      :style="{'left':$store.getters.voiceControlShow.isShow?'0px':'-200px'}"
+    >
+      <!--非音频S-->
       <div
         class="closes"
-        v-else
         style="width: 100%;height: 100%;"
+        v-if="$store.getters.voiceControlShow.isShow"
       >
-        <div style="width: 30px;height:35px;margin-left:5px">
+        <div style="width: 100%;height:35px;margin-left:5px;line-height: 35px;">
           <a-tooltip>
             <template slot="title">
               关闭操作框
             </template>
-            <a-icon @click="openDisturb=true" style="font-size: 25px;line-height: 30px;color: #fff" type="left"/>
+            <a-icon
+              @click="$store.commit('SET_VOIVECONTROLSHOW',{
+               isShow:false,
+               type:''
+            })"
+              style="font-size: 20px;color: #E8E6C2;" type="left"/>
           </a-tooltip>
+          <span style="font-size: 18px;color: #E8E6C2;margin-left: 5px;">
+            {{$store.getters.voiceControlShow.type}}</span>
         </div>
         <div style="width: 100%;height:calc(100% - 35px);">
-          <div class="layout-left-center" v-for="(item,index) in allDeviceVoiceArr" :key="index"
-               style="width: 100%;margin: 0px 10px;height: 40px;">
-            <div style="margin-right: 10px;width: 60px;">{{item.username}}</div>
-            <a-switch
-              :checked="item.isVoice"
-              @change="controlItemVoiveChange(item)"
-              :disabled="!item.audioUrl"
-            />
+          <!--可切换块1S-->
+          <div style="width: 100%;height: 100%;"
+               v-if="$store.getters.voiceControlShow.type === '语音控制'"
+          >
+            <div class="layout-left-center" v-for="(item,index) in allDeviceVoiceArr" :key="index"
+                 style="width: 100%;margin: 0px 10px;height: 40px;">
+              <div style="margin-right: 10px;width: 60px;">{{item.username}}</div>
+              <a-switch
+                :checked="item.isVoice"
+                @change="controlItemVoiveChange(item)"
+                :disabled="!item.audioUrl"
+              />
+            </div>
           </div>
+          <!--可切换块1E-->
+          <!--可切换块2S-->
+          <div
+            style="width:100%;height:100%;padding-top: 10px;"
+            v-if="$store.getters.voiceControlShow.type === '地图操作'"
+            class="layout-left-top"
+          >
+            <div
+              style="width: 60px;height:60px;border:1px solid #E8E6C2;border-radius: 10px;cursor: pointer;"
+              class="layout-center-top"
+              @click="$parent.backStartPoint()"
+            >
+              <svg-icon :h="35" :w="35" name="location" style="width:100%;"/>
+              <div style="margin: 0;padding:0;font-size:13px;">回原点</div>
+            </div>
+
+          </div>
+          <!--可切换块2E-->
         </div>
       </div>
+      <!--非音频E-->
       <!--音频S-->
       <div style="width: 100%;height: 500px;overflow: hidden;display: none;">
         <audio
@@ -57,6 +80,8 @@
 
 
 <script>
+  import SvgIcon from 'vue2-svg-icon/Icon.vue';
+
   export default {
     data() {
       return {
@@ -66,6 +91,9 @@
     },
     mounted() {
 
+    },
+    components: {
+      SvgIcon
     },
     methods: {
       // 拿给父组件调用
@@ -151,14 +179,16 @@
     padding: 5px;
     color: rgba(255, 255, 255, 0.9);
     transition: all .2s;
-    background: #235c46;
+    /*background: #235c46;*/
+    background: rgba(0, 0, 0, 0.45);
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     cursor: pointer;
   }
 
   .closes {
-    background: #235c46;
+    /*background: #235c46;*/
+    background: rgba(0, 0, 0, 0.45);
     padding: 10px;
     transition: all .2s;
     border-top-right-radius: 10px;
@@ -166,6 +196,7 @@
   }
 
   .ant-switch-checked {
-    background-color: #64b51d;
+    /*background-color: #64b51d;*/
+    background-color: #E8E6C2;
   }
 </style>

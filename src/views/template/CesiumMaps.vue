@@ -14,9 +14,9 @@
       <!--  </div>-->
       <!--</div>-->
     <!--</div>-->
-    <div style="position: absolute;bottom: 40px;right: 53px;z-index: 99;">
-      <a-icon type="environment" title="回到起始点" style="font-size: 20px" @click="positionMe"/>
-    </div>
+    <!--<div style="position: absolute;bottom: 40px;right: 53px;z-index: 99;">-->
+    <!--  <a-icon type="environment" title="回到起始点" style="font-size: 20px" @click="positionMe"/>-->
+    <!--</div>-->
     <!--<div style="position: absolute;bottom:37px;right:80px;z-index: 99;">-->
     <!--  <a-icon type="column-width" title="查看设备间距离" style="font-size: 28px" @click="lookGap"/>-->
     <!--</div>-->

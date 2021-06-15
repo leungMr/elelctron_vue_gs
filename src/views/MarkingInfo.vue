@@ -156,7 +156,7 @@
         // 初始化设备位置
         this.$refs.cesiumMaps.initDeviceLocation(this.trainInfo)
         // 初始化设备音量
-        // this.$refs.voiceControl.initAllDeviceVoice(this.deviceAndUserArr, this.trainInfo.examDesignId)
+        this.$refs.voiceControl.initAllDeviceVoice(this.deviceAndUserArr, this.trainInfo.examDesignId)
         // 初始化人员设备信息,这是一个数组,里面装的考试的组信息
         this.initDeviceAndPeople(this.trainInfo.trainingDesignRelevanceList)
       })
@@ -229,7 +229,7 @@
       // 处理卫勤各个阶段时间的展示
       handleStageTime(e) {
         // 节点开始和结束信息需要查另外一张表
-        console.log(e)
+        // console.log(e)
       },
       mouseoverMaodian(left) {
         this.poneNodes.forEach(item => {
@@ -458,6 +458,10 @@
           }
         })
         return name
+      },
+      // 兄弟组件传递事件
+      backStartPoint(){
+        this.$refs.cesiumMaps.positionMe()
       },
 
 

@@ -1,7 +1,11 @@
 <template>
-  <div class="absolute docker">
+  <div
+    class="absolute docker"
+  >
     <!--<div class="absolute docker-message" style="left: 10px;"></div>-->
-    <div class="absolute docker-tools">
+    <div
+      class="absolute docker-tools"
+    >
       <div
         class="height-100-per width-100-per relative"
       >
@@ -24,26 +28,24 @@
                style="position: absolute;top:0;left:0;"
           >
             <div class="content-two layout-side">
-              <div class="layout-center">
+              <div
+                class="layout-center"
+                @click="$store.commit('SET_VOIVECONTROLSHOW',{
+                isShow:true,
+                type:'语音控制'
+              })">
+                <svg-icon class="one" :h="30" :w="30" name="biaohui"/>
+                <span class="two">语音控制</span>
+              </div>
+              <div
+                class="layout-center"
+                @click="$store.commit('SET_VOIVECONTROLSHOW',{
+                isShow:true,
+                type:'地图操作'
+              })"
+              >
                 <svg-icon class="one" :h="30" :w="30" name="map"/>
                 <span class="two">地图操作</span>
-              </div>
-              <div class="layout-center">
-                <svg-icon class="one" :h="30" :w="30" name="biaohui"/>
-                <span class="two">军事标绘</span>
-              </div>
-              <div class="layout-center">
-                <svg-icon class="one" :h="30" :w="30" name="fsganrao"/>
-                <span class="two">指令下发</span>
-              </div>
-              <a-divider style="height: 15px" type="vertical"/>
-              <div class="layout-center">
-                <svg-icon class="one" :h="30" :w="30" name="zuwang"/>
-                <span class="two">组网信息</span>
-              </div>
-              <div class="layout-center">
-                <svg-icon class="one" :h="30" :w="30" name="ganrao"/>
-                <span class="two">干扰信息</span>
               </div>
               <a-divider style="height: 15px" type="vertical"/>
               <div class="layout-center">
@@ -66,7 +68,7 @@
   export default {
     data() {
       return {
-        isContentShow: false,
+        isContentShow: true,
       }
     },
     methods: {
