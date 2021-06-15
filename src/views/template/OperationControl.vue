@@ -2,46 +2,57 @@
   <div class="absolute docker">
     <!--<div class="absolute docker-message" style="left: 10px;"></div>-->
     <div class="absolute docker-tools">
-      <div class="height-100-per width-100-per relative">
+      <div
+        class="height-100-per width-100-per relative"
+      >
         <!--控制块S-->
-        <div class="top layout-center">
+        <div
+          class="top layout-center"
+          :style="{top:isContentShow?'-20px':'40px'}"
+          style="transition:all ease 0.5s"
+        >
           <div class="layout-center shrink">
-            <a-icon type="caret-down" @click="caretDown"/>
+            <a-icon :type="!isContentShow?'caret-up':'caret-down'" @click="caretDown"/>
           </div>
         </div>
         <!--控制块E-->
         <!--一级被控制块S-->
-        <div class="content layout-center">
-          <div class="content-two layout-side">
-
-            <div class="layout-center">
-              <svg-icon class="one" :h="30" :w="30" name="map"/>
-              <span class="two">地图操作</span>
-            </div>
-            <div class="layout-center">
-              <svg-icon class="one" :h="30" :w="30" name="biaohui"/>
-              <span class="two">军事标绘</span>
-            </div>
-            <div class="layout-center">
-              <svg-icon class="one" :h="30" :w="30" name="fsganrao"/>
-              <span class="two">指令下发</span>
-            </div>
-            <a-divider style="height: 15px" type="vertical"/>
-            <div class="layout-center">
-              <svg-icon class="one" :h="30" :w="30" name="zuwang"/>
-              <span class="two">组网信息</span>
-            </div>
-            <div class="layout-center">
-              <svg-icon class="one" :h="30" :w="30" name="ganrao"/>
-              <span class="two">干扰信息</span>
-            </div>
-            <a-divider style="height: 15px" type="vertical"/>
-            <div class="layout-center">
-              <svg-icon class="one" :h="30" :w="30" name="qita"/>
-              <span class="two">其他</span>
+        <!--它刚好60那么高-->
+        <transition name='one_transtion'>
+          <div class="content layout-center"
+               v-if="isContentShow"
+               style="position: absolute;top:0;left:0;"
+          >
+            <div class="content-two layout-side">
+              <div class="layout-center">
+                <svg-icon class="one" :h="30" :w="30" name="map"/>
+                <span class="two">地图操作</span>
+              </div>
+              <div class="layout-center">
+                <svg-icon class="one" :h="30" :w="30" name="biaohui"/>
+                <span class="two">军事标绘</span>
+              </div>
+              <div class="layout-center">
+                <svg-icon class="one" :h="30" :w="30" name="fsganrao"/>
+                <span class="two">指令下发</span>
+              </div>
+              <a-divider style="height: 15px" type="vertical"/>
+              <div class="layout-center">
+                <svg-icon class="one" :h="30" :w="30" name="zuwang"/>
+                <span class="two">组网信息</span>
+              </div>
+              <div class="layout-center">
+                <svg-icon class="one" :h="30" :w="30" name="ganrao"/>
+                <span class="two">干扰信息</span>
+              </div>
+              <a-divider style="height: 15px" type="vertical"/>
+              <div class="layout-center">
+                <svg-icon class="one" :h="30" :w="30" name="qita"/>
+                <span class="two">其他</span>
+              </div>
             </div>
           </div>
-        </div>
+        </transition>
         <!--一级被控制块E-->
       </div>
     </div>
@@ -54,11 +65,14 @@
 
   export default {
     data() {
-      return {}
+      return {
+        isContentShow: false,
+      }
     },
     methods: {
       caretDown() {
-        console.log("你点击了下拉")
+        // console.log("你点击了下拉")
+        this.isContentShow = !this.isContentShow
       }
     },
     components: {
@@ -98,7 +112,6 @@
     height: 20px;
     left: 0;
     right: 0;
-    top: -20px;
     position: absolute;
   }
 
@@ -140,5 +153,16 @@
     line-height: 20px;
     font-size: 13px;
   }
+
+  // 底部地图控制动画
+  .one_transtion-enter, .one_transtion-leave-to {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+
+  .one_transtion-enter-active, .one_transtion-leave-active {
+    transition: all 0.5S ease
+  }
+
 
 </style>
