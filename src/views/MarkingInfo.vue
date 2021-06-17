@@ -7,7 +7,7 @@
     <div style="width: 100%;height: calc(100% - 0px - 60px);padding-top: 2px;" class="layout-side">
       <!--中左S-->
       <div
-        style="height: 100%;width: 250px;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);">
+        style="height: 100%;width: 250px;border-right: 1px solid rgba(0, 0, 0, 0.2);box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);position: relative;z-index:9999;">
         <div style="width: 100%;height: 40px;padding: 0 10px;" class="layout-side bor-b">
           <a-icon type="rollback" style="font-size: 20px;" @click="$router.push('/marking')"></a-icon>
           <span style="font-size: 20px;">{{trainInfo.trainingTitleName}}</span>
