@@ -13,6 +13,7 @@
   "main": "background.js",
   "dependencies": {
     "@turf/turf": "^6.3.0",
+    "animate.css": "^3.5.1",
     "ant-design-vue": "^1.7.4",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",

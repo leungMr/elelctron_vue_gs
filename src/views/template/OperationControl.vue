@@ -39,16 +39,23 @@
               </div>
               <div
                 class="layout-center"
-                @click="$store.commit('SET_VOIVECONTROLSHOW',{
-                isShow:true,
-                type:'地图操作'
-              })"
+                @click="$parent.showWhichOne('地图操作')"
               >
                 <svg-icon class="one" :h="30" :w="30" name="map"/>
                 <span class="two">地图操作</span>
               </div>
+              <div
+                class="layout-center"
+                @click="$parent.showWhichOne('界面控制')"
+              >
+                <svg-icon class="one" :h="30" :w="30" name="zuwang"/>
+                <span class="two">界面控制</span>
+              </div>
               <a-divider style="height: 15px" type="vertical"/>
-              <div class="layout-center">
+              <div
+                class="layout-center"
+                @click="$parent.showWhichOne('其他')"
+              >
                 <svg-icon class="one" :h="30" :w="30" name="qita"/>
                 <span class="two">其他</span>
               </div>

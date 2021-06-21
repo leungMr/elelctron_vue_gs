@@ -47,7 +47,22 @@
             <VoiceControl
               ref="voiceControl"
             ></VoiceControl>
+            <!--扩展S-->
+            <div
+              style=" bottom: 0px;height: 60px;position: absolute; width:321px;left:50%;transform: translateX(-50%);background-color: transparent;border-top-left-radius: 10px;
+               border-top-right-radius: 10px;"
+            >
+              <!--此盒子用于放干扰,转化干扰-->
+              <!--document.getElementById("fileInput").click()-->
+              <!--<div style="width: 100%;height:100%;position: absolute;left: 0;top: 0px;display: none;">-->
+              <!--  <Disturb :nodesArr="nodesArr" ref="disturb"/>-->
+              <!--</div>-->
+              <ToolMenu ref="toolMenu"></ToolMenu>
+            </div>
+            <!--扩展E-->
+            <!--docker栏S-->
             <OperationControl ref="operationControl"></OperationControl>
+            <!--docker栏E-->
           </div>
         </div>
       </div>
@@ -117,6 +132,7 @@
   import CountDown from "./template/CounDown"
   import PeopleAndDevice from "./template/PeopleAndDevice"
   import OperationControl from "@/views/template/OperationControl";
+  import ToolMenu from "@/views/template/ToolMenu";
   import moment from 'moment'
 
   export default {
@@ -169,7 +185,8 @@
       VoiceControl,
       CountDown,
       PeopleAndDevice,
-      OperationControl
+      OperationControl,
+      ToolMenu
     },
     methods: {
       // 初始化人员设备组件
@@ -460,10 +477,13 @@
         return name
       },
       // 兄弟组件传递事件
-      backStartPoint(){
+      backStartPoint() {
         this.$refs.cesiumMaps.positionMe()
       },
-
+      // 兄弟组件传递事件
+      showWhichOne(e) {
+        this.$refs.toolMenu.showWhichOne(e)
+      }
 
     }
   }
